@@ -70,8 +70,8 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 			$this->quit(1);
 		}
 		$xsdSchema = tidy_repair_string($xsdSchema, array(
-			'output-xml' => true,
-			'input-xml' => true
+			'output-xml' => TRUE,
+			'input-xml' => TRUE
 		));
 		$this->output($xsdSchema);
 	}
