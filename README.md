@@ -5,6 +5,15 @@ Schemaker: Fluid ViewHelper XSD Schema Generator
 
 Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
 
+## Why use it?
+
+To name just a few reasons:
+
+* Autocompletion in Fluid templates for any extension's ViewHelpers - not just your own.
+* Basic validation of attributes, recognition and automatic adding of required attributes on Fluid ViewHelpers.
+* Ability to generate XSD schemas for the precise version of installed extensions - so you can tailor them to your project.
+* Increased speed and consistency in general when creating Fluid templates.
+
 ## What does it do?
 
 Schemaker generates XSD files (XML Schema Definition) which is a standardised format that can be referenced from an XML file to
