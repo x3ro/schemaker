@@ -1,5 +1,5 @@
-TYPO3 extension Schemaker: Fluid ViewHelper XSD Schema Generator
-================================================================
+Schemaker: Fluid ViewHelper XSD Schema Generator
+================================================
 
 ## What is it?
 
