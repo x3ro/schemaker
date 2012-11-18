@@ -126,10 +126,9 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * namespace prefix Tx_Fluid_ViewHelpers, this method returns "form.select".
 	 *
 	 * @param string $className Class name
-	 * @param string $namespace Base namespace to use
 	 * @return string
 	 */
-	protected function getTagNameForClass($className, $namespace) {
+	protected function getTagNameForClass($className) {
 		$className = substr($className, 0, -10);
 		$classNameParts = explode(Tx_Fluid_Fluid::NAMESPACE_SEPARATOR, $className);
 		$classNameParts = array_slice($classNameParts, 3);
@@ -163,7 +162,6 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 *
 	 * @param string $extensionKey Namespace identifier to generate the XSD for, without leading Backslash.
 	 * @param string $xsdNamespace $xsdNamespace unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers")
-	 * @param string $namespaceAlias Optional alias to use in XSD for this extension, for example EXT:my_complex_name as "mcn"
 	 * @return string XML Schema definition
 	 * @throws Exception
 	 */
@@ -181,9 +179,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
 
 		foreach ($classNames as $className) {
-			$namespaceName = $namespaceAlias !== NULL ? $namespaceAlias : $extensionKey;
-			$namespaceName = str_replace('_', '', $namespaceName);
-			$this->generateXmlForClassName($className, $namespaceName, $xmlRootNode);
+			$this->generateXmlForClassName($className, $xmlRootNode);
 		}
 
 		return $xmlRootNode->asXML();
@@ -193,17 +189,16 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * Generate the XML Schema for a given class name.
 	 *
 	 * @param string $className Class name to generate the schema for.
-	 * @param string $namespace Namespace to use in the XSD
 	 * @param SimpleXMLElement $xmlRootNode XML root node where the xsd:element is appended.
 	 * @return void
 	 */
-	protected function generateXmlForClassName($className, $namespace, SimpleXMLElement $xmlRootNode) {
+	protected function generateXmlForClassName($className, SimpleXMLElement $xmlRootNode) {
 		$reflectionClass = new Tx_Extbase_Reflection_ClassReflection($className);
 		if (!$reflectionClass->isSubclassOf($this->abstractViewHelperReflectionClass)) {
 			return;
 		}
 
-		$tagName = $this->getTagNameForClass($className, $namespace);
+		$tagName = $this->getTagNameForClass($className);
 
 		$xsdElement = $xmlRootNode->addChild('xsd:element');
 		$xsdElement['name'] = $tagName;

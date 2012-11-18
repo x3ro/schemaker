@@ -49,8 +49,6 @@ OPTIONS:
   --xsd-namespace      Unique target namespace used in the XSD schema (for
                        example "http://yourdomain.org/ns/viewhelpers").
                        Defaults to "http://typo3.org/ns/<php namespace>".
-  --namespace-alias    Alias to use in the XSD file for the extension's
-                       ViewHelpers, for example EXT:my_complex_name as "mcn"
 
 DESCRIPTION:
   Generates Schema documentation (XSD) for your ViewHelpers, preparing the
@@ -63,36 +61,11 @@ DESCRIPTION:
 Execution:
 
 ```bash
-me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate my_extkey "http://my.domain/namespace" me > me.xsd
+me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate my_extkey "http://my.domain/namespace" > me.xsd
 ```
 
 ...which will generate an XSD schema for all ViewHelpers in extension key (not ExtensionName!) "my_extkey", with the XSD namespace
-"http://my.domain/namespace" and the alias "me". The file will be called "me.xsd" and will be output to your current directory.
-
-## What is a namespace alias?
-
-Fluid templates do not require you do use the same namespace in every template, but usually you will be using one namespace per
-extension that you use. For example, the namespace alias "v" is used for VHS. The result of using a namespace alias in the CLI
-command is that instead of the extension key, this alias will be used as tag prefix - which means that if you use "v" as an alias
-when generating an XSD file for extension "VHS", it matches this namespace in the Fluid template:
-
-```xml
-{namespace v=Tx_Vhs_ViewHelpers}
-```
-
-Without the namespace alias, the Fluid template namespace would have to be:
-
-```xml
-{namespace vhs=Tx_Vhs_ViewHelpers}
-```
-
-Which means that if you wish to generate an XSD for Fluid's own ViewHelpers, you must execute:
-
-```bash
-me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate fluid "http://typo3.org/ns/fluid/ViewHelpers" f
-```
-
-Note the very last "f" - not a typo ;)
+"http://my.domain/namespace". The file will be called "me.xsd" and will be output to your current directory.
 
 ## How to use XSD in IDE
 

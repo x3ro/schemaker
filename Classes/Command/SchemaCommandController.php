@@ -55,10 +55,9 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 	 *
 	 * @param string $extensionKey Namespace of the Fluid ViewHelpers without leading backslash (for example 'TYPO3\Fluid\ViewHelpers'). NOTE: Quote and/or escape this argument as needed to avoid backslashes from being interpreted!
 	 * @param string $xsdNamespace Unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers"). Defaults to "http://typo3.org/ns/<php namespace>".
-	 * @param string $namespaceAlias Alias to use in the XSD file for the extension's ViewHelpers, for example EXT:my_complex_name as "mcn"
 	 * @return void
 	 */
-	public function generateCommand($extensionKey, $xsdNamespace = NULL, $namespaceAlias = NULL) {
+	public function generateCommand($extensionKey, $xsdNamespace = NULL) {
 		if ($xsdNamespace === NULL) {
 			$xsdNamespace = sprintf('http://typo3.org/ns/%s', str_replace('_', '/', $extensionKey));
 		}
