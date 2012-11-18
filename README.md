@@ -162,3 +162,29 @@ public function generateXsdAction() {
 ```
 
 You do not have to inject the Service in order to use it - but it does have to be created using Extbase's ObjectManager.
+
+## Suggested namespaces and aliases
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
+	  xmlns:flux="http://fedext.net/ns/flux/ViewHelpers"
+	  xmlns:fed="http://fedext.net/ns/fed/ViewHelpers"
+	  xmlns:dialog="http://fedext.net/ns/dialog/ViewHelpers"
+	  xmlns:notify="http://fedext.net/ns/notify/ViewHelpers"
+	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:w="http://fedext.net/ns/fluidwidget/ViewHelpers"
+	/>
+```
+
+Note: The following schemas are available for download (use "save page as") at the URLs used in the namespaces:
+
+* http://fedext.net/ns/flux/ViewHelpers
+* http://fedext.net/ns/fed/ViewHelpers
+* http://fedext.net/ns/vhs/ViewHelpers
+* http://fedext.net/ns/fluidwidget/ViewHelpers
+* http://fedext.net/ns/dialog/ViewHelpers
+* http://fedext.net/ns/notify/ViewHelpers
+
+These schemas all apply to the very latest master versions of each extension's ViewHelpers - if you require an XSD for an earlier
+version which you currently have installed, simply generate an XSD from that TYPO3 installation and use the same namespace URL.
