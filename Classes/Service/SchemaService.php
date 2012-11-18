@@ -100,7 +100,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 			if (class_exists($className)) {
 				$parent = $className;
 				while ($parent = get_parent_class($parent)) {
-					if ($parent === 'Tx_Fluid_Core_ViewHelper_AbstractViewHelper') {
+					if ($parent === 'Tx_Fluid_Core_ViewHelper_AbstractViewHelper' || $parent === 'TYPO3\\CMS\\Fluid\Core\\ViewHelper\\AbstractViewHelper') {
 						array_push($allViewHelperClassNames, $className);
 					}
 				}
