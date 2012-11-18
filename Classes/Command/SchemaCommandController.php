@@ -68,10 +68,12 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 			$this->outputLine('%s', array($exception->getMessage()));
 			$this->quit(1);
 		}
-		$xsdSchema = tidy_repair_string($xsdSchema, array(
-			'output-xml' => TRUE,
-			'input-xml' => TRUE
-		));
+		if (function_exists('tidy_repair_string') === TRUE) {
+			$xsdSchema = tidy_repair_string($xsdSchema, array(
+				'output-xml' => TRUE,
+				'input-xml' => TRUE
+			));
+		}
 		$this->output($xsdSchema);
 	}
 }
