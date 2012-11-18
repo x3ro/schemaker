@@ -81,6 +81,7 @@ slashes also count!):
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
 	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
 	<head>
+		<f:layout name="Default" />
 		<title>XSD Usage with extensions Fluid and VHS</title>
 	</head>
 	<body>
@@ -89,7 +90,7 @@ slashes also count!):
 </html>
 ```
 
-This is the basic form. Enter the proper URL for the namespace and choose the same alias as you used in the Fluid namespace
+This is the standard format. Enter the proper URL for the namespace and choose the same alias as you used in the Fluid namespace
 registration. Fluid is always "f:" naturally, but you are free to use any prefix you like for other ViewHelpers as long as it
 matches the prefix used in the "xmlns:" definition.
 
@@ -97,6 +98,72 @@ Some IDEs then require you to load XSD schema files and enter a namespace URL as
 the URL correctly or it won't work correctly. See your specific IDE's documentation about how to include XSD files (in PHPStorm
 you open preferences, find the "Schemas and DTDs" configuration section and in the top frame, add the XSD files used in your
 project.
+
+## When to use - and when not to use
+
+Use this when your template contains Sections. That's the base rule. The reason is the necessity for having a wrapping tag (in
+the above example the HTML tag is used) and this can be difficult to accomodate correctly in all IDEs.
+
+Using Fluid Sections to contain the "real" output of the template will allow you to place any amount of HTML outside of the
+f:section tag. If your IDE only supports the standard implementation as described in the previous chapter you should always use
+sections whenever you want to use the XSD capabilities.
+
+However, some IDEs are capable of recognizing the xmlns: attributes and applying the XSD even if there is no XML header and the
+HTML tag is not being used. Other IDEs may require that the standard way (XML header, HTML tag used for xmlns: definitions) is
+used. If your particular IDE does not require this approach, you should be able to use as such:
+
+```html
+{namespace v=Tx_Vhs_ViewHelpers}
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+	<!-- Fluid goes here -->
+</div>
+```
+
+Naturally the DIV element will be included in the output, but most importantly there will not be HTML, HEAD and BODY tags output.
+
+### About Partials
+
+Partial templates also allow using Sections - and you can use this to your advantage when you want the XSD capabilities inside
+a Partial template (which means without sections, you normally would not be able to without some additional output as described
+above). Simply construct your Partial template so that it contains only one section, then always render the section whenever you
+render the Partial:
+
+```xml
+<f:render partial="MyPartial" section="Main" />
+```
+
+And construct the Partial template itself as such:
+
+```html
+{namespace v=Tx_Vhs_ViewHelpers}
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+	<head>
+		<title>Partials: MyPartial</title>
+	</head>
+	<body>
+		<f:section name="Main">
+			<!-- Fluid goes here -->
+		</f:section>
+	</body>
+</html>
+```
+
+Although it does add to the complexity of each template, the benefit of auto completion - especially on attributes - may outweigh
+the need for a lot of extra HTML in your templates. It does make your Partial templates nicely compliant when viewed directly as
+HTML in a browser if you have a habit of previewing this way.
+
+### About Layouts
+
+This is the drawback: if your IDE does not support non-standard use of xmlns: definitions you will be forced to use the HTML tag
+or live without XSD support in your Layout files. The reason is of course that neither Extbase nor TYPO3 itself expects HTML and
+BODY tags to be output by any page or extension templates - and naturally you can't use Sections in a Layout.
+
+Most likely you will want to just ignore the XSD capabilities in your Layouts to make them more compatible with TYPO3's core.
 
 ## Note about TYPO3 4.5 LTS
 
