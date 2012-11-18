@@ -115,3 +115,41 @@ Some IDEs then require you to load XSD schema files and enter a namespace URL as
 the URL correctly or it won't work correctly. See your specific IDE's documentation about how to include XSD files (in PHPStorm
 you open preferences, find the "Schemas and DTDs" configuration section and in the top frame, add the XSD files used in your
 project.
+
+## Note about TYPO3 4.5 LTS
+
+Although it is possible to generate XSD files on TYPO3 4.5 it is not possible to do using the above commands. A CLI implementation
+compatible with 4.5 was not included as it would greatly increase the complexity of this extremely simple extension. You can
+create XSD files by injecting the SchemaService and calling it with a few arguments:
+
+```php
+/**
+ * @var Tx_Schemaker_Service_SchemaService
+ */
+protected $schemaService;
+
+/**
+ * @param Tx_Schemaker_Service_Schema $schemaService
+ * @return void
+ */
+public function injectSchemaService(Tx_Schemaker_Service_SchemaService $schemaService) {
+	$this->schemaService = $schemaService;
+}
+
+/**
+ * @return void
+ */
+public function generateXsdAction() {
+		$extensionKey = 'my_extkey';
+		$xsdNamespace = 'http://my.domain/namespace';
+		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace);
+			// optional: use the PHP Tidy extension to format the XML output a bit
+		$xsdSchema = tidy_repair_string($xsdSchema, array(
+			'output-xml' => TRUE,
+			'input-xml' => TRUE
+		));
+		file_put_contents('/path/to/file.xsd', $xsdSchema);
+}
+```
+
+You do not have to inject the Service in order to use it - but it does have to be created using Extbase's ObjectManager.
