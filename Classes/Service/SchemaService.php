@@ -130,7 +130,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 */
 	protected function getTagNameForClass($className) {
 		$className = substr($className, 0, -10);
-		$classNameParts = explode(Tx_Fluid_Fluid::NAMESPACE_SEPARATOR, $className);
+		$classNameParts = explode('_', $className);
 		$classNameParts = array_slice($classNameParts, 3);
 		$classNameParts = array_map('lcfirst', $classNameParts);
 		$tagName = implode('.', $classNameParts);
