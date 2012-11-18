@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "schemaker".
  *
- * Auto generated 18-11-2012 16:12
+ * Auto generated 18-11-2012 19:46
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 1,
 	'lockType' => '',
-	'version' => '1.0.0',
+	'version' => '1.0.1',
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '4.5-0.0.0',
@@ -45,7 +45,7 @@ $EM_CONF[$_EXTKEY] = array(
 	),
 	'suggests' => array(
 	),
-	'_md5_values_when_last_written' => 'a:6:{s:16:"ext_autoload.php";s:4:"f55e";s:12:"ext_icon.gif";s:4:"68b4";s:17:"ext_localconf.php";s:4:"a63e";s:9:"README.md";s:4:"bb5b";s:43:"Classes/Command/SchemaCommandController.php";s:4:"ecbe";s:33:"Classes/Service/SchemaService.php";s:4:"4cab";}',
+	'_md5_values_when_last_written' => 'a:6:{s:16:"ext_autoload.php";s:4:"f55e";s:12:"ext_icon.gif";s:4:"68b4";s:17:"ext_localconf.php";s:4:"a63e";s:9:"README.md";s:4:"07b9";s:43:"Classes/Command/SchemaCommandController.php";s:4:"7556";s:33:"Classes/Service/SchemaService.php";s:4:"af33";}',
 );
 
 ?>
