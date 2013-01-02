@@ -1,0 +1,190 @@
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+{namespace v=Tx_Vhs_ViewHelpers}
+
+<style type="text/css">
+	pre.prettyprint ol.linenums <f:escape>{</f:escape>
+		margin: 0px 0px 0px 5px;
+	}
+	pre.prettyprint ol.linenums li <f:escape>{</f:escape>
+		margin-bottom: 4px;
+		font-size: 12px;
+	}
+	.argument-type, .argument-default-value {
+		width: 20%;
+	}
+</style>
+
+<div class="row-fluid">
+	<div class="span4">
+		<f:render section="Index" arguments="{tree: tree, arguments: arguments}" />
+	</div>
+	<div class="span8">
+		<f:render section="BreadCrumb" arguments="{_all}" />
+		<f:if condition="{problem}">
+			<f:then>
+				<div class="alert alert-warning">
+					<h2 class="alert-header">
+						There was a problem loading the class
+					</h2>
+					<p>
+						The class {className} could not be loaded - there is a multitude of possible reasons, but no way to automatically resolve it.
+						Please review the class file and make the necessary fixes to allow class loading.
+					</p>
+				</div>
+			</f:then>
+			<f:else>
+				<f:if condition="{isFile}">
+					<f:then>
+						<f:render section="Class" arguments="{_all}" />
+					</f:then>
+					<f:else>
+						<f:render section="Overview" arguments="{_all}" />
+					</f:else>
+				</f:if>
+			</f:else>
+		</f:if>
+	</div>
+</div>
+
+<f:section name="Index">
+	<h4>
+		<i class="icon icon-folder-open"></i>
+		<f:if condition="{tree.arguments}">
+			<f:then>
+				{tree.segments -> v:iterator.implode(glue: ' / ')}
+			</f:then>
+			<f:else>
+				/
+			</f:else>
+		</f:if>
+	</h4>
+	<ul class="unstyled nav">
+		<f:if condition="{tree.classes}">
+			<f:for each="{tree.classes}" key="class" as="classLinkArguments">
+				<li class="{f:if(condition: '{arguments -> v:iterator.values()} == {classLinkArguments -> v:iterator.values()', then: 'active')}">
+					<f:render section="Link" arguments="{icon: 'file', text: '{tree.segments -> v:iterator.implode(glue: \'/\')}{f:if(condition: tree.segments, then: \'/\')}{class}', arguments: classLinkArguments, currentArguments: arguments}" />
+				</li>
+			</f:for>
+		</f:if>
+	</ul>
+	<f:for each="{tree.branches}" as="branch" key="folder">
+		<f:render section="Index" arguments="{tree: branch, segments: '{v:iterator.merge(a: segments, b: folder)}', arguments: arguments}" />
+	</f:for>
+</f:section>
+
+<f:section name="BreadCrumb">
+	<ul class="breadcrumb">
+		<li class="muted">
+			<f:link.page>{extensionKey}</f:link.page>
+			<f:if condition="{segments}">
+				<span class="divider">/</span>
+			</f:if>
+		</li>
+		<f:for each="{segments}" as="segment" iteration="iteration">
+			<li>
+				<span>{segment}</span>
+				<f:if condition="{iteration.isLast}">
+					<f:else>
+						<span class="divider">/</span>
+					</f:else>
+				</f:if>
+			</li>
+		</f:for>
+	</ul>
+</f:section>
+
+<f:section name="Overview">
+	<h2>ViewHelper Reference for extension "{extensionKey}"</h2>
+	<p>
+		Select the approproate ViewHelper from the menu to the left.
+	</p>
+</f:section>
+
+<f:section name="Class">
+	<f:if condition="{markdownBlacklisted}">
+		<f:then>
+			{docComment
+			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint linenums:1"')
+			-> v:format.replace(substring: '</code>', replacement: '</pre>')
+			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
+			-> v:format.replace(substring: '</output>', replacement: '</pre>')
+			-> f:format.html()}
+		</f:then>
+		<f:else>
+			{docComment
+			-> v:format.markdown()
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">')}
+		</f:else>
+	</f:if>
+	<h3>Usage</h3>
+	<pre class="prettyprint lang-html linenums:1">
+<f:format.htmlentities><f:escape>{</f:escape>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:escape>}</f:escape></f:format.htmlentities>
+
+<f:format.htmlentities><!-- Tag-based usage --></f:format.htmlentities>
+{tagExample}
+
+<f:format.htmlentities><!-- Tag-based usage, required arguments only --></f:format.htmlentities>
+{tagExampleRequired}
+
+<f:format.htmlentities><!-- Tag-based usage, self-closing w/o tag content usage, required arguments only --></f:format.htmlentities>
+{tagExampleSelfClosingRequired}
+
+<f:format.htmlentities><!-- Inline usage --></f:format.htmlentities>
+{inlineExample}
+
+<f:format.htmlentities><!-- Inline usage , required arguments only--></f:format.htmlentities>
+{inlineExampleRequired}</pre>
+	<h2>Attributes</h2>
+	<ul class="unstyled">
+		<li>
+			<i class="icon icon-asterisk"></i> Required attribute
+		</li>
+		<li>
+			<i class="icon icon-arrow-right"></i> Attribute is also method argument
+		</li>
+	</ul>
+	<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th class="argument-type">Type</th>
+				<th class="argument-default-value">Default&nbsp;value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
+				<tr>
+					<td>
+						<h4>
+							<f:if condition="{argument.required}"><i class="icon icon-asterisk"></i></f:if>
+							<f:if condition="{argument.isMethodParameter}"><i class="icon icon-arrow-right"></i></f:if>
+							{argument.name}
+						</h4>
+						<em>
+							{argument.description}
+						</em>
+					</td>
+					<td>{argument.type}</td>
+					<td>{argument.defaultValue -> f:format.raw() -> f:debug(inline: 1, plainText: 1, title: '')}</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+</f:section>
+
+<f:section name="Link">
+	<f:link.action action="schema" arguments="{arguments}">
+		<f:if condition="{icon}">
+			<f:then>
+				<i class="icon icon-{icon}"></i> {text}
+			</f:then>
+			<f:else>
+				{text}
+			</f:else>
+		</f:if>
+	</f:link.action>
+</f:section>
+
+</div>
