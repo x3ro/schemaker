@@ -11,14 +11,14 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Schemaker: Fluid ViewHelper XSD Schema Generator',
-	'description' => 'Generates XSD schemas for the ViewHelpers in any installed extension in its current version. See: https://github.com/NamelessCoder/schemaker',
+	'title' => 'Schemaker: Fluid ViewHelper Schema Generator',
+	'description' => 'Generates XSD schemas (and optional browsable schema as FE plugin) for the ViewHelpers in any installed extension in its current version. See: https://github.com/NamelessCoder/schemaker',
 	'category' => 'misc',
 	'author' => 'Claus Due',
 	'author_email' => 'claus@wildside.dk',
 	'author_company' => 'Wildside A/S',
 	'shy' => '',
-	'dependencies' => 'cms,extbase,fluid,flux',
+	'dependencies' => 'cms,extbase,fluid',
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
@@ -36,7 +36,6 @@ $EM_CONF[$_EXTKEY] = array(
 			'cms' => '',
 			'extbase' => '',
 			'fluid' => '',
-			'flux' => '',
 		),
 		'conflicts' => array(
 		),
