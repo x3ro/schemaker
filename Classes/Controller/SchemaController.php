@@ -105,7 +105,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$files = $this->getViewHelperClassFileBaseNames($dirPath);
 		}
 		if ($isFile) {
-			$className = 'Tx_' . ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($this->getExtensionKeySetting())) . '_ViewHelpers_' . implode('_', $segments);
+			$className = 'Tx_' . ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey)) . '_ViewHelpers_' . implode('_', $segments);
 			if (!class_exists($className)) {
 				$problem = 1;
 			} else {
