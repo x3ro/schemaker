@@ -4,10 +4,11 @@
 {namespace v=Tx_Vhs_ViewHelpers}
 
 <style type="text/css">
-	pre.prettyprint ol.linenums <f:escape>{</f:escape>
+	<f:escape>
+	pre.prettyprint ol.linenums {
 		margin: 0px 0px 0px 40px;
 	}
-	pre.prettyprint ol.linenums li <f:escape>{</f:escape>
+	pre.prettyprint ol.linenums li {
 		margin-bottom: 4px;
 		font-size: 12px;
 	}
@@ -16,6 +17,8 @@
 	}
 	.extension-statistics .thumbnail {
 		width:  200px;
+		margin-left: 0px;
+		margin-right: 2em;
 	}
 	.extension-statistics p {
 		font-size:  90%;
@@ -29,13 +32,14 @@
 		text-align: center;
 		margin-bottom: 14px;
 	}
+	</f:escape>
 </style>
 
 <div class="row-fluid">
-	<div class="span4">
+	<div class="span3">
 		<f:render section="Index" arguments="{tree: tree, arguments: arguments}" />
 	</div>
-	<div class="span8">
+	<div class="span9">
 		<f:render section="BreadCrumb" arguments="{_all}" />
 		<f:if condition="{problem}">
 			<f:then>
@@ -101,7 +105,7 @@
 		<f:if condition="{tree.classes}">
 			<f:for each="{tree.classes}" key="class" as="classLinkArguments">
 				<li class="{f:if(condition: '{arguments -> v:iterator.values()} == {classLinkArguments -> v:iterator.values()', then: 'active')}">
-					<f:render section="Link" arguments="{icon: 'file', text: '{tree.segments -> v:iterator.implode(glue: \'/\')}{f:if(condition: tree.segments, then: \'/\')}{class}', arguments: classLinkArguments, currentArguments: arguments}" />
+					<f:render section="Link" arguments="{icon: 'file', text: '{class}', arguments: classLinkArguments, currentArguments: arguments}" />
 				</li>
 			</f:for>
 		</f:if>
@@ -133,6 +137,30 @@
 </f:section>
 
 <f:section name="Class">
+	<div class="badge badge-info pull-right lead">
+		<h4>{f:if(condition: ajaxWidget, then: 'AJAX ')}{viewHelperType}</h4>
+	</div>
+	<h2><i class="icon icon-chevron-left"></i> {name} <i class="icon icon-chevron-right"></i></h2>
+	<f:if condition="{displayHeadsUp}">
+		<div class="alert alert-warning">
+			<h3 class="alert-heading">Heads up! <small>This ViewHelper has advanced features</small></h3>
+			<ul>
+				<f:if condition="{tagBased}">
+					<li>
+						This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
+						very well. The ViewHelper outputs a single, complete HTML tag with attributes.
+					</li>
+				</f:if>
+				<f:if condition="{ajaxWidgetSingleton}">
+					<li>
+						This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
+						EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
+						intended when dispatching the AJAX calls.
+					</li>
+				</f:if>
+			</ul>
+		</div>
+	</f:if>
 	<f:if condition="{markdownBlacklisted}">
 		<f:then>
 			{docComment
@@ -160,12 +188,12 @@
 
 <f:format.htmlentities><!-- Tag-based usage, self-closing w/o tag content usage, required arguments only --></f:format.htmlentities>
 {tagExampleSelfClosingRequired}
-
+<f:if condition="{tagBased} < 1">
 <f:format.htmlentities><!-- Inline usage --></f:format.htmlentities>
 {inlineExample}
-
 <f:format.htmlentities><!-- Inline usage , required arguments only--></f:format.htmlentities>
-{inlineExampleRequired}</pre>
+{inlineExampleRequired}
+</pre></f:if>
 	<h2>Attributes</h2>
 	<ul class="unstyled">
 		<li>
