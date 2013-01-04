@@ -93,6 +93,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$extensionKey = $this->getExtensionKeySetting();
 		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
 		$namespaceName = $extensionName;
+		$displayHeadsUp = FALSE;
 		if (isset($this->extensionKeyToNamespaceMap[$namespaceName])) {
 			$namespaceName = $this->extensionKeyToNamespaceMap[$namespaceName];
 		}
@@ -117,8 +118,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 					$viewHelperType = 'Widget';
 					$isAjaxWidget = Tx_Extbase_Reflection_ObjectAccess::getProperty($instance, 'ajaxWidget', TRUE);
 					$isAjaxWidgetSingleton = $isAjaxWidget && !$instance instanceof Tx_Fluidwidget_Core_Widget_AbstractWidgetViewHelper;
+					$displayHeadsUp = TRUE;
 				} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
 					$viewHelperType = 'Tag Based';
+					$displayHeadsUp = TRUE;
 				} else {
 					$viewHelperType = 'Basic';
 				}
@@ -151,6 +154,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			'ajaxWidget' => $isAjaxWidget,
 			'tagBased' => ($viewHelperType == 'Tag Based'),
 			'ajaxWidgetSingleton' => $isAjaxWidgetSingleton,
+			'displayHeadsUp' => $displayHeadsUp,
 			'className' => $className,
 			'tagExample' => $this->buildTagExample($className, $viewHelperArguments),
 			'tagExampleRequired' => $this->buildTagExample($className, $viewHelperArguments, TRUE),
