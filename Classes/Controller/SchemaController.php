@@ -115,6 +115,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				$instance = $this->objectManager->create($className);
 				if (is_subclass_of($instance, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
 					$viewHelperType = 'Widget';
+					$isAjaxWidget = Tx_Extbase_Reflection_ObjectAccess::getProperty($instance, 'ajaxWidget', TRUE);
+					$isAjaxWidgetSingleton = $isAjaxWidget && !$instance instanceof Tx_Fluidwidget_Core_Widget_AbstractWidgetViewHelper;
 				} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
 					$viewHelperType = 'Tag Based';
 				} else {
@@ -146,6 +148,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$this->view->assignMultiple(array(
 			'name' => $name,
 			'viewHelperType' => $viewHelperType,
+			'ajaxWidget' => $isAjaxWidget,
+			'tagBased' => ($viewHelperType == 'Tag Based'),
+			'ajaxWidgetSingleton' => $isAjaxWidgetSingleton,
 			'className' => $className,
 			'tagExample' => $this->buildTagExample($className, $viewHelperArguments),
 			'tagExampleRequired' => $this->buildTagExample($className, $viewHelperArguments, TRUE),
