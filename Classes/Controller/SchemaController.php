@@ -98,8 +98,6 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 		$extensionName = ucfirst($extensionName);
 		$tree = $this->buildTree($this->getFolderPathFromSegments(array()));
-		if (count($segments) === 0) {
-		}
 		$isFolder = is_dir($dirPath);
 		$isFile = $this->isFile($segments);
 		if ($isFolder) {
