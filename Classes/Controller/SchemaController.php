@@ -106,6 +106,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 		if ($isFile) {
 			$className = 'Tx_' . ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey)) . '_ViewHelpers_' . implode('_', $segments);
+			$name = $namespaceName . ':' . implode('.', array_map('lcfirst', $segments));
+			$name = substr($name, 0, -10);
 			if (!class_exists($className)) {
 				$problem = 1;
 			} else {
@@ -135,6 +137,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			}
 		}
 		$this->view->assignMultiple(array(
+			'name' => $name,
 			'className' => $className,
 			'tagExample' => $this->buildTagExample($className, $viewHelperArguments),
 			'tagExampleRequired' => $this->buildTagExample($className, $viewHelperArguments, TRUE),
