@@ -113,6 +113,13 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			} else {
 				/** @var $instance Tx_Fluid_Core_ViewHelper_AbstractViewHelper */
 				$instance = $this->objectManager->create($className);
+				if (is_subclass_of($instance, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
+					$viewHelperType = 'Widget';
+				} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
+					$viewHelperType = 'Tag Based';
+				} else {
+					$viewHelperType = 'Basic';
+				}
 				$viewHelperArguments = $instance->prepareArguments();
 				$classReflection = new ReflectionClass($instance);
 				$docComment = $classReflection->getDocComment();
@@ -138,6 +145,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 		$this->view->assignMultiple(array(
 			'name' => $name,
+			'viewHelperType' => $viewHelperType,
 			'className' => $className,
 			'tagExample' => $this->buildTagExample($className, $viewHelperArguments),
 			'tagExampleRequired' => $this->buildTagExample($className, $viewHelperArguments, TRUE),
