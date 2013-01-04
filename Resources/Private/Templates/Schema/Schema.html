@@ -48,6 +48,26 @@
 	</div>
 </div>
 
+<f:section name="Overview">
+	<h2>ViewHelper Reference for extension "{extensionKey}"</h2>
+	<p>
+		Select the approproate ViewHelper from the menu to the left.
+	</p>
+	<div class="page-header">
+		<h3>Numbers <small>statistical ascpects of extension "{extensionKey}"</small></h3>
+	</div>
+	<ul class="thumbnails">
+		<f:for each="{counters}" as="item" iteration="iteration">
+			<li class="thumbnail">
+				<h1>{item.counter}</h1>
+				<p>
+					{item.text}
+				</p>
+			</li>
+		</f:for>
+	</ul>
+</f:section>
+
 <f:section name="Index">
 	<h4>
 		<i class="icon icon-folder-open"></i>
@@ -93,13 +113,6 @@
 			</li>
 		</f:for>
 	</ul>
-</f:section>
-
-<f:section name="Overview">
-	<h2>ViewHelper Reference for extension "{extensionKey}"</h2>
-	<p>
-		Select the approproate ViewHelper from the menu to the left.
-	</p>
 </f:section>
 
 <f:section name="Class">

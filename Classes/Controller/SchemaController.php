@@ -34,6 +34,33 @@
  */
 class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller_ActionController {
 
+	const COUNTER_VIEWHELPERS = 0;
+	const COUNTER_ABSTRACTS = 1;
+	const COUNTER_TAGBASED = 2;
+	const COUNTER_WIDGETS = 3;
+
+	/**
+	 * @var array
+	 */
+	protected $counters = array(
+		self::COUNTER_VIEWHELPERS => array(
+			'counter' => 0,
+			'text' => 'Total ViewHelpers',
+		),
+		self::COUNTER_ABSTRACTS => array(
+			'counter' => 0,
+			'text' => 'Abstract ViewHelpers',
+		),
+		self::COUNTER_TAGBASED => array(
+			'counter' => 0,
+			'text' => 'Tag Based ViewHelpers',
+		),
+		self::COUNTER_WIDGETS => array(
+			'counter' => 0,
+			'text' => 'Widget ViewHelpers',
+		),
+	);
+
 	/**
 	 * @var array
 	 */
@@ -131,7 +158,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			'tags' => $tags,
 			'tree' => $tree,
 			'extensionKey' => $extensionKey,
-			'extensionName' => $extensionName
+			'extensionName' => $extensionName,
+			'counters' => $this->counters
 		));
 	}
 
@@ -144,6 +172,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$classBaseNames = array_map('basename', $classBaseNames);
 		foreach ($classBaseNames as $index => $baseName) {
 			if (strpos($baseName, 'Abstract') === 0) {
+				$this->increaseCounter(self::COUNTER_ABSTRACTS, 1);
 				unset($classBaseNames[$index]);
 				continue;
 			}
@@ -220,6 +249,12 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$classes = $this->getViewHelperClassFileBaseNames($dirPath);
 		$classes = array_combine($classes, $classes);
 		foreach ($classes as $class) {
+			$this->increaseCounter(self::COUNTER_VIEWHELPERS, 1);
+			if (is_a($class, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
+				$this->increaseCounter(self::COUNTER_WIDGETS, 1);
+			} elseif (is_a($class, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
+				$this->increaseCounter(self::COUNTER_TAGBASED, 1);
+			}
 			$classSegments = array_merge($segments, array($class));
 			$classes[$class] = $this->segmentsToArguments($classSegments);
 		}
@@ -332,5 +367,13 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$arguments['p' . ($index + 1)] = $segment;
 		}
 		return $arguments;
+	}
+
+	/**
+	 * @param integer $counter
+	 * @param float $amount
+	 */
+	protected function increaseCounter($counter, $amount) {
+		$this->counters[$counter]['counter'] += ($amount);
 	}
 }
