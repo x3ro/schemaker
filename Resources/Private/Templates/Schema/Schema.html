@@ -14,6 +14,11 @@
 	.argument-type, .argument-default-value {
 		width: 20%;
 	}
+	.extension-statistics h1 {
+		font-size:  72px;
+		color:  #222222;
+		text-align: center;
+	}
 </style>
 
 <div class="row-fluid">
@@ -56,16 +61,18 @@
 	<div class="page-header">
 		<h3>Numbers <small>statistical ascpects of extension "{extensionKey}"</small></h3>
 	</div>
-	<ul class="thumbnails">
-		<f:for each="{counters}" as="item" iteration="iteration">
-			<li class="thumbnail">
-				<h1>{item.counter}</h1>
-				<p>
-					{item.text}
-				</p>
-			</li>
-		</f:for>
-	</ul>
+	<div class="extension-statistics">
+		<ul class="thumbnails">
+			<f:for each="{counters}" as="item" iteration="iteration">
+				<li class="thumbnail">
+					<h1>{item.counter}</h1>
+					<p>
+						{item.text}
+					</p>
+				</li>
+			</f:for>
+		</ul>
+	</div>
 </f:section>
 
 <f:section name="Index">
