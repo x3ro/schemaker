@@ -246,11 +246,19 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$folders = $this->getSubFolders($dirPath);
 		$classes = $this->getViewHelperClassFileBaseNames($dirPath);
 		$classes = array_combine($classes, $classes);
+		$extensionKey = $this->getExtensionKeySetting();
+		$extensionName = ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey));
 		foreach ($classes as $class) {
+			$className = 'Tx_' . $extensionName . '_ViewHelpers_' . implode('_', $segments) . (count($segments) > 0 ? '_' : '') . $class;
+			if (class_exists($className) === FALSE) {
+				unset($classes[$class]);
+				continue;
+			}
+			$instance = $this->objectManager->get($className);
 			$this->increaseCounter(self::COUNTER_VIEWHELPERS, 1);
-			if (is_a($class, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
+			if (is_subclass_of($instance, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
 				$this->increaseCounter(self::COUNTER_WIDGETS, 1);
-			} elseif (is_a($class, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
+			} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
 				$this->increaseCounter(self::COUNTER_TAGBASED, 1);
 			}
 			$classSegments = array_merge($segments, array($class));
