@@ -95,19 +95,49 @@
 			</p>
 		</div>
 	</div>
-	<h3>IDE integration tips</h3>
-	<div class="alert alert-info">
-		<ul class="unstyled">
-			<li>
-				Download the XSD file and place it locally - or use the URL that is generated as value of <code>{namespaceName}:schemaLocation</code>
-			</li>
-			<li>
-				Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs.
-			</li>
-			<li>
-				If you don't use a <code>schemaLocation</code>, make sure the URL you use when mapping the XSD file to the URL is exactly the same as in the templates.
-			</li>
-		</ul>
+	<h3>XSD Usage examples</h3>
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>Using the <code>&lt;html&gt;</code> tag</h4>
+			<pre class="prettyprint lang-html linenums:1">
+<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:{namespaceName}="$NAMESPACEURL"
+      f:schemaLocation="$NAMESPACEURL {f:uri.action(arguments: {p1: 'view-xsd'}, absolute: 1)}">
+<head>
+	<title>Partials: MyPartial</title>
+</head>
+<body>
+    <<f:escape>f:section name="Main"</f:escape>>
+	    <!-- Fluid goes here -->
+    <<f:escape>/f:section</f:escape>>
+</body>
+</html></f:format.htmlentities></pre>
+		</div>
+		<div class="span6">
+			<h4>Using a <code>&lt;div&gt;</code> or other standard tag</h4>
+			<pre class="prettyprint lang-html linenums:1">
+<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+     xmlns:f="$NAMESPACEURL"
+     f:schemaLocation="$NAMESPACEURL {f:uri.action(arguments: {p1: 'view-xsd'}, absolute: 1)}">
+	<!-- Fluid goes here, no sections necessary -->
+</div></f:format.htmlentities></pre>
+			<div class="alert alert-info">
+				<ul>
+					<li>
+						Download the XSD file and place it locally - or use the URL as value of <code>{namespaceName}:schemaLocation</code>
+					</li>
+					<li>
+						Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs
+					</li>
+					<li>
+						If you don't use a <code>schemaLocation</code>, make sure the URL you use when mapping the XSD file to the URL is exactly the same as in the templates
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </f:section>
 

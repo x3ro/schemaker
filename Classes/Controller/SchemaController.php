@@ -107,7 +107,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 
 		$extensionKey = $this->getExtensionKeySetting();
 		$namespaceName = str_replace('_', '', $extensionKey);
-		$namespaceName = strtolower($namespace);
+		$namespaceName = strtolower($namespaceName);
 		if (isset($this->extensionKeyToNamespaceMap[$extensionKey])) {
 			$namespaceAlias = $this->extensionKeyToNamespaceMap[$extensionKey];
 		} else {
@@ -133,7 +133,6 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$arguments = $this->segmentsToArguments($segments);
 		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
 		$extensionName = ucfirst($extensionName);
-		$namespaceName = $extensionName;
 		$displayHeadsUp = FALSE;
 		if (isset($this->extensionKeyToNamespaceMap[$namespaceName])) {
 			$namespaceName = $this->extensionKeyToNamespaceMap[$namespaceName];
