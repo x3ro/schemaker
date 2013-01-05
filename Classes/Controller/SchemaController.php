@@ -38,6 +38,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	const COUNTER_ABSTRACTS = 1;
 	const COUNTER_TAGBASED = 2;
 	const COUNTER_WIDGETS = 3;
+	const COUNTER_SUBGROUPS = 4;
 
 	/**
 	 * @var array
@@ -58,6 +59,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		self::COUNTER_WIDGETS => array(
 			'counter' => 0,
 			'text' => 'Widget ViewHelpers',
+		),
+		self::COUNTER_SUBGROUPS => array(
+			'counter' => 0,
+			'text' => 'Groups',
 		),
 	);
 
@@ -284,6 +289,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$classSegments = array_merge($segments, array($class));
 			$classes[$class] = $this->segmentsToArguments($classSegments);
 		}
+		$this->increaseCounter(self::COUNTER_SUBGROUPS, count($folders));
 		foreach ($folders as $folder) {
 			$subSegments = array_merge($segments, array($folder));
 			$branches[$folder] = $this->buildTree($dirPath . $folder . '/', $subSegments);
