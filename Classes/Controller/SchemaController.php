@@ -67,6 +67,11 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	);
 
 	/**
+	 * @var Tx_Schemaker_Service_SchemaService
+	 */
+	protected $schemaService;
+
+	/**
 	 * @var array
 	 */
 	protected $extensionKeyToNamespaceMap = array('fluid' => 'f', 'vhs' => 'v', 'fluidwidget' => 'w');
@@ -75,6 +80,14 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @var array
 	 */
 	protected $markdownBlacklistedExtensionKeys = array('fluid', 'news');
+
+	/**
+	 * @param Tx_Schemaker_Service_SchemaService $schemaService
+	 * @return void
+	 */
+	public function injectSchemaService(Tx_Schemaker_Service_SchemaService $schemaService) {
+		$this->schemaService = $schemaService;
+	}
 
 	/**
 	 * Renders browsable schema for ViewHelpers in extension selected in
@@ -91,18 +104,40 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @route NoMatch('bypass')
 	 */
 	public function schemaAction($p1 = NULL, $p2 = NULL, $p3 = NULL, $p4 = NULL, $p5 = NULL) {
+
+		$extensionKey = $this->getExtensionKeySetting();
+		$namespaceName = str_replace('_', '', $extensionKey);
+		$namespaceName = strtolower($namespace);
+		if (isset($this->extensionKeyToNamespaceMap[$extensionKey])) {
+			$namespaceAlias = $this->extensionKeyToNamespaceMap[$extensionKey];
+		} else {
+			$namespaceAlias = str_replace('_', '', $extensionKey);
+		}
+		$schemaSource = $this->schemaService->generateXsd($extensionKey, $namespaceName, $namespaceAlias);
+		switch ($p1) {
+			case 'download-xsd':
+				header('Content-type: text/xml');
+				header('Content-disposition: attachment; filename=' . $extensionKey . '.xsd');
+				echo $schemaSource;
+				exit();
+			case 'view-xsd':
+				header('Content-type: text/xml');
+				echo $schemaSource;
+				exit();
+			default:
+		}
+
 		$segments = array($p1, $p2, $p3, $p4, $p5);
 		$segments = $this->trimPathSegments($segments);
 		$dirPath = $this->getFolderPathFromSegments($segments);
 		$arguments = $this->segmentsToArguments($segments);
-		$extensionKey = $this->getExtensionKeySetting();
 		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
+		$extensionName = ucfirst($extensionName);
 		$namespaceName = $extensionName;
 		$displayHeadsUp = FALSE;
 		if (isset($this->extensionKeyToNamespaceMap[$namespaceName])) {
 			$namespaceName = $this->extensionKeyToNamespaceMap[$namespaceName];
 		}
-		$extensionName = ucfirst($extensionName);
 		$tree = $this->buildTree($this->getFolderPathFromSegments(array()));
 		$isFolder = is_dir($dirPath);
 		$isFile = $this->isFile($segments);
@@ -160,6 +195,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			'tagBased' => ($viewHelperType == 'Tag Based'),
 			'ajaxWidgetSingleton' => $isAjaxWidgetSingleton,
 			'displayHeadsUp' => $displayHeadsUp,
+			'namespaceName' => $namespaceName,
 			'className' => $className,
 			'tagExample' => $this->buildTagExample($className, $viewHelperArguments),
 			'tagExampleRequired' => $this->buildTagExample($className, $viewHelperArguments, TRUE),

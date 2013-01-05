@@ -87,6 +87,33 @@
 			</f:for>
 		</ul>
 	</div>
+	<h3>Resources <small>Schemas for extension <code>{extensionKey}</code></small></h3>
+	<div class="row-fluid">
+		<div class="span8">
+			<p>
+				<f:link.action class="btn btn-block btn-large btn-primary" controller="Schema" arguments="{p1: 'download-xsd'}">Download XSD Schema</f:link.action>
+			</p>
+		</div>
+		<div class="span4">
+			<p>
+				<f:link.action class="btn btn-block btn-large" controller="Schema" arguments="{p1: 'view-xsd'}">View XSD Schema</f:link.action>
+			</p>
+		</div>
+	</div>
+	<h3>IDE integration tips</h3>
+	<div class="alert alert-info">
+		<ul class="unstyled">
+			<li>
+				Download the XSD file and place it locally - or use the URL that is generated as value of <code>{namespaceName}:schemaLocation</code>
+			</li>
+			<li>
+				Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs.
+			</li>
+			<li>
+				If you don't use a <code>schemaLocation</code>, make sure the URL you use when mapping the XSD file to the URL is exactly the same as in the templates.
+			</li>
+		</ul>
+	</div>
 </f:section>
 
 <f:section name="Index">
