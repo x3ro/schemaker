@@ -197,19 +197,30 @@
 		<div class="alert alert-warning">
 			<h3 class="alert-heading">Heads up! <small>This ViewHelper has advanced features</small></h3>
 			<ul>
-				<f:if condition="{tagBased}">
-					<li>
-						This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
-						very well. The ViewHelper outputs a single, complete HTML tag with attributes.
-					</li>
-				</f:if>
-				<f:if condition="{ajaxWidgetSingleton}">
-					<li>
-						This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
-						EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
-						intended when dispatching the AJAX calls.
-					</li>
-				</f:if>
+				<v:switch value="{viewHelperType}">
+					<v:case case="Tag Based" break="TRUE">
+						<li>
+							This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
+							very well. The ViewHelper outputs a single, complete HTML tag with attributes.
+						</li>
+					</v:case>
+					<v:case case="Condition" break="TRUE">
+						<li>
+							This ViewHelper is a Condition ViewHelper, which means it supports the <code>then</code> and
+							<code>else</code> arguments as 	well as the use of <code>f:then</code> and <code>f:else</code>
+							child ViewHelpers.
+						</li>
+					</v:case>
+					<v:case case="Widget" break="TRUE">
+						<f:if condition="{ajaxWidgetSingleton}">
+							<li>
+								This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
+								EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
+								intended when dispatching the AJAX calls.
+							</li>
+						</f:if>
+					</v:case>
+				</v:switch>
 			</ul>
 		</div>
 	</f:if>

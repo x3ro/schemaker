@@ -37,8 +37,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	const COUNTER_VIEWHELPERS = 0;
 	const COUNTER_ABSTRACTS = 1;
 	const COUNTER_TAGBASED = 2;
-	const COUNTER_WIDGETS = 3;
-	const COUNTER_SUBGROUPS = 4;
+	const COUNTER_CONDITIONS = 3;
+	const COUNTER_WIDGETS = 4;
+	const COUNTER_SUBGROUPS = 5;
 
 	/**
 	 * @var array
@@ -55,6 +56,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		self::COUNTER_TAGBASED => array(
 			'counter' => 0,
 			'text' => 'Tag Based',
+		),
+		self::COUNTER_CONDITIONS => array(
+			'counter' => 0,
+			'text' => 'Conditions',
 		),
 		self::COUNTER_WIDGETS => array(
 			'counter' => 0,
@@ -157,6 +162,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 					$viewHelperType = 'Widget';
 					$isAjaxWidget = Tx_Extbase_Reflection_ObjectAccess::getProperty($instance, 'ajaxWidget', TRUE);
 					$isAjaxWidgetSingleton = $isAjaxWidget && !$instance instanceof Tx_Fluidwidget_Core_Widget_AbstractWidgetViewHelper;
+					$displayHeadsUp = ($isAjaxWidgetSingleton);
+				} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractConditionViewHelper')) {
+					$viewHelperType = 'Condition';
 					$displayHeadsUp = TRUE;
 				} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
 					$viewHelperType = 'Tag Based';
@@ -318,6 +326,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$this->increaseCounter(self::COUNTER_VIEWHELPERS, 1);
 			if (is_subclass_of($instance, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
 				$this->increaseCounter(self::COUNTER_WIDGETS, 1);
+			} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractConditionViewHelper')) {
+				$this->increaseCounter(self::COUNTER_CONDITIONS, 1);
 			} elseif (is_subclass_of($instance, 'Tx_Fluid_Core_ViewHelper_AbstractTagBasedViewHelper')) {
 				$this->increaseCounter(self::COUNTER_TAGBASED, 1);
 			}
