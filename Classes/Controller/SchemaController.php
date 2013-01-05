@@ -46,19 +46,19 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	protected $counters = array(
 		self::COUNTER_VIEWHELPERS => array(
 			'counter' => 0,
-			'text' => 'Total ViewHelpers',
+			'text' => 'Total',
 		),
 		self::COUNTER_ABSTRACTS => array(
 			'counter' => 0,
-			'text' => 'Abstract ViewHelpers',
+			'text' => 'Abstract',
 		),
 		self::COUNTER_TAGBASED => array(
 			'counter' => 0,
-			'text' => 'Tag Based ViewHelpers',
+			'text' => 'Tag Based',
 		),
 		self::COUNTER_WIDGETS => array(
 			'counter' => 0,
-			'text' => 'Widget ViewHelpers',
+			'text' => 'Widgets',
 		),
 		self::COUNTER_SUBGROUPS => array(
 			'counter' => 0,
