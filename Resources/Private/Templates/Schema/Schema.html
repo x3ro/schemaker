@@ -3,6 +3,14 @@
       xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
 {namespace v=Tx_Vhs_ViewHelpers}
 
+<style type="text/css">
+	<f:escape>
+	.viewhelper-group-tree {
+		display: none;
+	}
+	</f:escape>
+</style>
+
 <div class="row-fluid">
 	<div class="span3 well well-small">
 		<div class="form-search">
@@ -311,9 +319,6 @@
 		color:  #555555;
 		text-align: center;
 		margin-bottom: 8px;
-	}
-	.viewhelper-group-tree {
-		display: none;
 	}
 	.viewhelper-group-toggle {
 		cursor: pointer;
