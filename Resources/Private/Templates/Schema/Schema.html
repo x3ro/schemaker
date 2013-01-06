@@ -342,6 +342,19 @@
 		var viewingClass = $('#viewing-classname').val();
 		var activeLink = $(this);
 		var touched = false;
+		$('.extension-statistics h1').each(function() {
+			var number = $(this);
+			var value = parseInt(number.text());
+			number.html(0);
+			number.ficticious = 0;
+			number.animate({'ficticious': value}, {
+				'step': function(now) {
+					number.html(Math.floor(now).toString());
+				},
+				'easing': 'linear',
+				'duration': 250
+			});
+		});
 		$('#viewhelper-filter').keyup(function() {
 			var q = $(this).val();
 			if (typeof q == 'string') {
