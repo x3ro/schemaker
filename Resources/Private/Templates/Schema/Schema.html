@@ -384,13 +384,13 @@
 				};
 			};
 		}).blur(function() {
-					if ($(this).val().length < 1) {
-						touched = false;
-					};
-				}).tooltip({
-					'title': 'Tip: Use TAB for quick access',
-					'trigger': 'hover'
-				});
+			if ($(this).val().length < 1) {
+				touched = false;
+			};
+		}).tooltip({
+			'title': 'Tip: Use TAB for quick access',
+			'trigger': 'hover'
+		});
 		$('.viewhelper-group').each(function() {
 			var element = $(this);
 			var tree = element.find('.viewhelper-group-tree');
