@@ -31,12 +31,138 @@
 		text-align: center;
 		margin-bottom: 8px;
 	}
+	.viewhelper-group-tree {
+		display: none;
+	}
+	.viewhelper-group-toggle {
+		cursor: pointer;
+		margin-bottom: 0px;
+	}
+	.viewhelper-group-toggle:hover {
+		color: #005580;
+	}
+	#viewhelper-filter {
+		display: block;
+		margin-right: 0px;
+		width:  90%;
+		padding: 5px 5% 5px 5%;
+	}
 	</f:escape>
 </style>
 
+<script type="text/javascript">
+	<f:format.raw>
+	$(document).ready(function($) {
+		var viewingClass = $('#viewing-classname').val();
+		var activeLink = $(this);
+		var touched = false;
+		$('#viewhelper-filter').keyup(function() {
+			var q = $(this).val();
+			if (typeof q == 'string') {
+				if (q.length == 0 && touched) {
+					$('.viewhelper-group-tree').hide();
+					$('.viewhelper-group').show();
+					$('.viewhelper-group a').each(function() {
+						if ($(this).name == activeLink.name) {
+							expandGroup($(this).parents('.viewhelper-group:first').find('.viewhelper-group-toggle'), $(this).parents('.viewhelper-group:first').find('.viewhelper-group-tree'), 0);
+						};
+						$(this).parents('li:first').show();
+					});
+					$('.viewhelper-group').each(function() {
+						var toggle = $(this).find('.viewhelper-group-toggle');
+						var tree = $(this).find('.viewhelper-group-tree');
+						if ($(this).find('li.active').length == 0) {
+							collapseGroup(toggle, tree, 0);
+						};
+					});
+				} else if (q.length >= 1) {
+					touched = true
+					$('.viewhelper-group').each(function() {
+						var group = $(this);
+						var toggle = group.find('.viewhelper-group-toggle');
+						var groupTree = group.find('.viewhelper-group-tree');
+						groupTree.find('a').each(function() {
+							var link = $(this);
+							if (link.attr('name').indexOf(q) >= 0) {
+								expandGroup(toggle, groupTree, 0);
+								link.parents('li:first').show();
+							} else {
+								link.parents('li:first').hide();
+							};
+						});
+						if (group.find('li:visible').length == 0) {
+							collapseGroup(toggle, groupTree, 0);
+							group.hide();
+						};
+					});
+				};
+			};
+		}).blur(function() {
+			if ($(this).val().length < 1) {
+				touched = false;
+			};
+		}).tooltip({
+			'title': 'Tip: Use TAB for quick access',
+			'trigger': 'hover'
+		});
+		$('.viewhelper-group').each(function() {
+			var element = $(this);
+			var tree = element.find('.viewhelper-group-tree');
+			tree.hide();
+			element.find('.folder-icon').removeClass('icon-folder-open').addClass('icon-folder-close');
+			element.find('.viewhelper-group-toggle').click(function() {
+				var toggle = $(this);
+				if (tree.hasClass('open')) {
+					collapseGroup(element, tree);
+				<f:escape>} else {</f:escape>
+					expandGroup(element, tree);
+				<f:escape>}</f:escape>;
+			<f:escape>}</f:escape>);
+		});
+		$('.viewhelper-group-tree a').each(function() {
+			var link = $(this);
+			var parent = link.parents('.viewhelper-group:first');
+			if (link.attr('name') == viewingClass) {
+				activeLink = link;
+				link.parents('li:first').addClass('active');
+				expandGroup(parent.find('.viewhelper-group-toggle'), parent.find('.viewhelper-group-tree'), 1);
+			<f:escape>}</f:escape>;
+		<f:escape>}</f:escape>);
+		function collapseGroup(toggle, tree, speed) {
+			if (typeof speed == 'undefined') {
+				speed = 250;
+			};
+			toggle.animate({'color': '#333'}, speed);
+			toggle.find('.folder-icon').addClass('icon-folder-close').removeClass('icon-folder-open');
+				tree.slideUp(speed, function() {
+				tree.removeClass('open');
+			<f:escape>}</f:escape>);
+		};
+		function expandGroup(toggle, tree, speed) {
+			if (typeof speed == 'undefined') {
+				speed = 250;
+			};
+			toggle.find('.folder-icon').addClass('icon-folder-open').removeClass('icon-folder-close');
+			if (speed > 0) {
+				toggle.animate({'color': '#08C'}, speed);
+				tree.slideDown(speed, function() {
+					tree.addClass('open');
+				<f:escape>}</f:escape>);
+			} else {
+				toggle.css({'color': '#08C'});
+				tree.show();
+			};
+		};
+	});
+	</f:format.raw>
+</script>
+
 <div class="row-fluid">
 	<div class="span3 well well-small">
-		<f:render section="Index" arguments="{tree: tree, arguments: arguments}" />
+		<div class="form-search">
+			<input id="viewhelper-filter" type="text" class="search-query" placeholder="Filter ViewHelpers" tabindex="1" />
+		</div>
+		<f:render section="Index" arguments="{_all}" />
 	</div>
 	<div class="span9">
 		<f:render section="BreadCrumb" arguments="{_all}" />
@@ -142,28 +268,30 @@
 </f:section>
 
 <f:section name="Index">
-	<h4>
-		<i class="icon icon-folder-open"></i>
-		<f:if condition="{tree.arguments}">
-			<f:then>
-				{tree.segments -> v:iterator.implode(glue: ' / ')}
-			</f:then>
-			<f:else>
-				/
-			</f:else>
-		</f:if>
-	</h4>
-	<ul class="unstyled nav">
-		<f:if condition="{tree.classes}">
-			<f:for each="{tree.classes}" key="class" as="classLinkArguments">
-				<li class="{f:if(condition: '{arguments -> v:iterator.values()} == {classLinkArguments -> v:iterator.values()', then: 'active')}">
-					<f:render section="Link" arguments="{icon: 'file', text: '{class}', arguments: classLinkArguments, currentArguments: arguments}" />
-				</li>
-			</f:for>
-		</f:if>
-	</ul>
+	<div class="viewhelper-group">
+		<h4 class="viewhelper-group-toggle">
+			<i class="icon icon-folder-open folder-icon"></i>
+			<f:if condition="{tree.arguments}">
+				<f:then>
+					{tree.segments -> v:iterator.implode(glue: ' / ')}
+				</f:then>
+				<f:else>
+					/
+				</f:else>
+			</f:if>
+		</h4>
+		<ul class="nav nav-list nav-stacked viewhelper-group-tree">
+			<f:if condition="{tree.classes}">
+				<f:for each="{tree.classes}" key="class" as="classLinkArguments">
+					<li>
+						<f:render section="Link" arguments="{icon: 'file', text: '{class}', dataClass: '{v:iterator.merge(a: {0: \'Tx\', 1: extensionName, 2: \'ViewHelpers\'}, b: classLinkArguments) -> v:iterator.values() -> v:iterator.implode(glue: \'_\')}', arguments: classLinkArguments, currentArguments: arguments}" />
+					</li>
+				</f:for>
+			</f:if>
+		</ul>
+	</div>
 	<f:for each="{tree.branches}" as="branch" key="folder">
-		<f:render section="Index" arguments="{tree: branch, segments: '{v:iterator.merge(a: segments, b: folder)}', arguments: arguments}" />
+		<f:render section="Index" arguments="{tree: branch, segments: '{v:iterator.merge(a: segments, b: folder)}', arguments: arguments, extensionName: extensionName}" />
 	</f:for>
 </f:section>
 
@@ -189,6 +317,7 @@
 </f:section>
 
 <f:section name="Class">
+	<input type="hidden" id="viewing-classname" value="{className -> v:format.url.sanitizeString()}" />
 	<div class="badge badge-info pull-right lead">
 		<h4>{f:if(condition: ajaxWidget, then: 'AJAX ')}{viewHelperType}</h4>
 	</div>
@@ -296,7 +425,7 @@
 </f:section>
 
 <f:section name="Link">
-	<f:link.action action="schema" arguments="{arguments}">
+	<f:link.action action="schema" arguments="{arguments}" id="{text -> v:format.url.sanitizeString()}" name="{dataClass -> v:format.url.sanitizeString()}">
 		<f:if condition="{icon}">
 			<f:then>
 				<i class="icon icon-{icon}"></i> {text}
