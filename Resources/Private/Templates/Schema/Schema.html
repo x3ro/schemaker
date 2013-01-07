@@ -214,12 +214,12 @@
 			-> v:format.replace(substring: '</code>', replacement: '</pre>')
 			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
 			-> v:format.replace(substring: '</output>', replacement: '</pre>')
-			-> f:format.html()}
+			-> f:format.html() -> v:format.tidy()}
 		</f:then>
 		<f:else>
 			{docComment
 			-> v:format.markdown()
-			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">')}
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">') -> v:format.tidy()}
 		</f:else>
 	</f:if>
 	<h3>Usage</h3>
