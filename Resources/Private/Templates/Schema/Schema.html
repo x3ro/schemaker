@@ -4,11 +4,11 @@
 {namespace v=Tx_Vhs_ViewHelpers}
 
 <style type="text/css">
-	<f:escape>
+	<f:format.raw>
 	.viewhelper-group-tree {
 		display: none;
 	}
-	</f:escape>
+	</f:format.raw>
 </style>
 
 <div class="row-fluid">
@@ -80,7 +80,7 @@
 		<div class="span6">
 			<h4>Using the <code>&lt;html&gt;</code> tag</h4>
 			<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
+<f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:{namespaceName}="$NAMESPACEURL"
@@ -89,16 +89,16 @@
 	<title>Partials: MyPartial</title>
 </head>
 <body>
-    <<f:escape>f:section name="Main"</f:escape>>
+    <<f:format.raw>f:section name="Main"</f:format.raw>>
 	    <!-- Fluid goes here -->
-    <<f:escape>/f:section</f:escape>>
+    <<f:format.raw>/f:section</f:format.raw>>
 </body>
 </html></f:format.htmlentities></pre>
 		</div>
 		<div class="span6">
 			<h4>Using a <code>&lt;div&gt;</code> or other standard tag</h4>
 			<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
+<f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="$NAMESPACEURL"
      f:schemaLocation="$NAMESPACEURL {f:uri.action(arguments: {p1: 'view-xsd'}, absolute: 1)}">
@@ -224,7 +224,7 @@
 	</f:if>
 	<h3>Usage</h3>
 	<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:escape>}</f:escape></f:format.htmlentities>
+<f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:format.raw>}</f:format.raw></f:format.htmlentities>
 
 <f:format.htmlentities><!-- Tag-based usage --></f:format.htmlentities>
 {tagExample}
@@ -293,7 +293,7 @@
 
 
 <style type="text/css">
-	<f:escape>
+	<f:format.raw>
 	pre.prettyprint ol.linenums {
 		margin: 0px 0px 0px 40px;
 	}
@@ -333,7 +333,7 @@
 		width:  90%;
 		padding: 5px 5% 5px 5%;
 	}
-	</f:escape>
+	</f:format.raw>
 </style>
 
 <script type="text/javascript">
@@ -413,10 +413,10 @@
 				var toggle = $(this);
 				if (tree.hasClass('open')) {
 					collapseGroup(element, tree);
-				<f:escape>} else {</f:escape>
+				<f:format.raw>} else {</f:format.raw>
 					expandGroup(element, tree);
-				<f:escape>}</f:escape>;
-				<f:escape>}</f:escape>);
+				<f:format.raw>}</f:format.raw>;
+				<f:format.raw>}</f:format.raw>);
 		});
 		$('.viewhelper-group-tree a').each(function() {
 			var link = $(this);
@@ -425,8 +425,8 @@
 				activeLink = link;
 				link.parents('li:first').addClass('active');
 				expandGroup(parent.find('.viewhelper-group-toggle'), parent.find('.viewhelper-group-tree'), 1);
-			<f:escape>}</f:escape>;
-			<f:escape>}</f:escape>);
+			<f:format.raw>}</f:format.raw>;
+			<f:format.raw>}</f:format.raw>);
 		function collapseGroup(toggle, tree, speed) {
 			if (typeof speed == 'undefined') {
 				speed = 250;
@@ -435,7 +435,7 @@
 			toggle.find('.folder-icon').addClass('icon-folder-close').removeClass('icon-folder-open');
 			tree.slideUp(speed, function() {
 				tree.removeClass('open');
-				<f:escape>}</f:escape>);
+				<f:format.raw>}</f:format.raw>);
 		};
 		function expandGroup(toggle, tree, speed) {
 			if (typeof speed == 'undefined') {
@@ -446,7 +446,7 @@
 				toggle.animate({'color': '#08C'}, speed);
 				tree.slideDown(speed, function() {
 					tree.addClass('open');
-					<f:escape>}</f:escape>);
+					<f:format.raw>}</f:format.raw>);
 			} else {
 				toggle.css({'color': '#08C'});
 				tree.show();
