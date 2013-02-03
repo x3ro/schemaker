@@ -3,14 +3,6 @@
       xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
 {namespace v=Tx_Vhs_ViewHelpers}
 
-<style type="text/css">
-	<f:format.raw>
-	.viewhelper-group-tree {
-		display: none;
-	}
-	</f:format.raw>
-</style>
-
 <div class="row-fluid">
 	<div class="span3 well well-small">
 		<div class="form-search">
@@ -292,8 +284,11 @@
 </f:section>
 
 
-<style type="text/css">
+<v:asset.style name="schemaker">
 	<f:format.raw>
+		.viewhelper-group-tree {
+		display: none;
+		}
 	pre.prettyprint ol.linenums {
 		margin: 0px 0px 0px 40px;
 	}
@@ -334,9 +329,9 @@
 		padding: 5px 5% 5px 5%;
 	}
 	</f:format.raw>
-</style>
+</v:asset.style>
 
-<script type="text/javascript">
+<v:asset.script name="schemaker-script">
 	<f:format.raw>
 	$(document).ready(function($) {
 		var viewingClass = $('#viewing-classname').val();
@@ -454,6 +449,6 @@
 		};
 	});
 	</f:format.raw>
-</script>
+</v:asset.script>
 
 </div>
