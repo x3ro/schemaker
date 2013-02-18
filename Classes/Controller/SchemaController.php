@@ -118,7 +118,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		} else {
 			$namespaceAlias = str_replace('_', '', $extensionKey);
 		}
-		$schemaSource = $this->schemaService->generateXsd($extensionKey, $namespaceName, $namespaceAlias);
+		$namespaceUrl = 'http://' . ('fluid' === $namespaceName ? 'typo3.org' : 'fedext.net') . '/ns/' . $namespaceName . '/ViewHelpers';;
+		$schemaSource = $this->schemaService->generateXsd($extensionKey, $namespaceUrl, $namespaceAlias);
 		switch ($p1) {
 			case 'download-xsd':
 				header('Content-type: text/xml');
