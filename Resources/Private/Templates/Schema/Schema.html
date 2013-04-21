@@ -130,14 +130,18 @@
 			<f:if condition="{tree.classes}">
 				<f:for each="{tree.classes}" key="class" as="classLinkArguments">
 					<li>
-						<f:render section="Link" arguments="{icon: 'file', text: '{class}', dataClass: '{v:iterator.merge(a: {0: \'Tx\', 1: extensionName, 2: \'ViewHelpers\'}, b: classLinkArguments) -> v:iterator.values() -> v:iterator.implode(glue: \'_\')}', arguments: classLinkArguments, currentArguments: arguments}" />
+						<f:render section="Link" arguments="{icon: 'file', text: '{class}', dataClass: '{v:iterator.merge(a: {0: \'Tx\',
+							1: extensionName,
+							2: \'ViewHelpers\'},
+								b: classLinkArguments) -> v:iterator.values() -> v:iterator.implode(glue: \'_\')}',
+								arguments: classLinkArguments, currentArguments: arguments}" />
 					</li>
 				</f:for>
 			</f:if>
 		</ul>
 	</div>
 	<f:for each="{tree.branches}" as="branch" key="folder">
-		<f:render section="Index" arguments="{tree: branch, segments: '{v:iterator.merge(a: segments, b: folder)}', arguments: arguments, extensionName: extensionName}" />
+		<f:render section="Index" arguments="{tree: branch, arguments: arguments, extensionName: extensionName}" />
 	</f:for>
 </f:section>
 
@@ -172,30 +176,26 @@
 		<div class="alert alert-warning">
 			<h3 class="alert-heading">Heads up! <small>This ViewHelper has advanced features</small></h3>
 			<ul>
-				<v:switch value="{viewHelperType}">
-					<v:case case="Tag Based" break="TRUE">
-						<li>
-							This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
-							very well. The ViewHelper outputs a single, complete HTML tag with attributes.
-						</li>
-					</v:case>
-					<v:case case="Condition" break="TRUE">
-						<li>
-							This ViewHelper is a Condition ViewHelper, which means it supports the <code>then</code> and
-							<code>else</code> arguments as 	well as the use of <code>f:then</code> and <code>f:else</code>
-							child ViewHelpers.
-						</li>
-					</v:case>
-					<v:case case="Widget" break="TRUE">
-						<f:if condition="{ajaxWidgetSingleton}">
-							<li>
-								This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
-								EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
-								intended when dispatching the AJAX calls.
-							</li>
-						</f:if>
-					</v:case>
-				</v:switch>
+				<f:if condition="{0: viewHelperType} == {0: 'Tag Based'}">
+					<li>
+						This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
+						very well. The ViewHelper outputs a single, complete HTML tag with attributes.
+					</li>
+				</f:if>
+				<f:if condition="{0: viewHelperType} == {0: 'Condition'}">
+					<li>
+						This ViewHelper is a Condition ViewHelper, which means it supports the <code>then</code> and
+						<code>else</code> arguments as 	well as the use of <code>f:then</code> and <code>f:else</code>
+						child ViewHelpers.
+					</li>
+				</f:if>
+				<f:if condition="{0: viewHelperType} == {0: 'Widget'}">
+					<li>
+						This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
+						EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
+						intended when dispatching the AJAX calls.
+					</li>
+				</f:if>
 			</ul>
 		</div>
 	</f:if>
@@ -402,7 +402,6 @@
 		$('.viewhelper-group').each(function() {
 			var element = $(this);
 			var tree = element.find('.viewhelper-group-tree');
-			tree.hide();
 			element.find('.folder-icon').removeClass('icon-folder-open').addClass('icon-folder-close');
 			element.find('.viewhelper-group-toggle').click(function() {
 				var toggle = $(this);
@@ -411,7 +410,7 @@
 				<f:format.raw>} else {</f:format.raw>
 					expandGroup(element, tree);
 				<f:format.raw>}</f:format.raw>;
-				<f:format.raw>}</f:format.raw>);
+			<f:format.raw>}</f:format.raw>);
 		});
 		$('.viewhelper-group-tree a').each(function() {
 			var link = $(this);
@@ -419,9 +418,9 @@
 			if (link.attr('name') == viewingClass) {
 				activeLink = link;
 				link.parents('li:first').addClass('active');
-				expandGroup(parent.find('.viewhelper-group-toggle'), parent.find('.viewhelper-group-tree'), 1);
+				expandGroup(parent.find('.viewhelper-group-toggle'), parent.find('.viewhelper-group-tree'));
 			<f:format.raw>}</f:format.raw>;
-			<f:format.raw>}</f:format.raw>);
+		<f:format.raw>}</f:format.raw>);
 		function collapseGroup(toggle, tree, speed) {
 			if (typeof speed == 'undefined') {
 				speed = 250;
@@ -430,7 +429,7 @@
 			toggle.find('.folder-icon').addClass('icon-folder-close').removeClass('icon-folder-open');
 			tree.slideUp(speed, function() {
 				tree.removeClass('open');
-				<f:format.raw>}</f:format.raw>);
+			<f:format.raw>}</f:format.raw>);
 		};
 		function expandGroup(toggle, tree, speed) {
 			if (typeof speed == 'undefined') {
@@ -441,7 +440,7 @@
 				toggle.animate({'color': '#08C'}, speed);
 				tree.slideDown(speed, function() {
 					tree.addClass('open');
-					<f:format.raw>}</f:format.raw>);
+				<f:format.raw>}</f:format.raw>);
 			} else {
 				toggle.css({'color': '#08C'});
 				tree.show();
