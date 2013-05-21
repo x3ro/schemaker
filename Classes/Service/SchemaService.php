@@ -84,17 +84,16 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	/**
 	 * Get all class names inside this namespace and return them as array.
 	 *
-	 * @param string $extensionKey
+	 * @param string $combinedExtensionKey Extension Key with (possibly) leading Vendor Prefix
 	 * @return array
 	 */
-	protected function getClassNamesInExtension($extensionKey) {
+	protected function getClassNamesInExtension($combinedExtensionKey) {
 		$allViewHelperClassNames = array();
-		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
+		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
 		$path = t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/');
 		$filesInPath = t3lib_div::getAllFilesAndFoldersInPath(array(), $path, 'php');
-		$pathLength = strlen($path);
 		foreach ($filesInPath as $filePathAndFilename) {
-			$className = $this->getRealClassNameBasedOnExtensionAndFilenameAndExistence($vendor ? $vendor . '.' : '' . $extensionKey, $filePathAndFilename);
+			$className = $this->getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filePathAndFilename);
 			if (class_exists($className)) {
 				$parent = $className;
 				while ($parent = get_parent_class($parent)) {
@@ -250,18 +249,22 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * Tx_ prefixed class name is tried. If this too does not exist,
 	 * an Exception is thrown.
 	 *
-	 * @param string $extensionKey
+	 * @param string $combinedExtensionKey
 	 * @param string $className
 	 * @return string
 	 * @throws Exception
 	 */
-	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($extensionKey, $filename) {
-		list ($vendorName, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
+	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
+		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
 		$filename = str_replace(t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/'), '', $filename);
-		$stripped = substr($filename, $pathLength);
-		$stripped = substr($stripped, 0, -4);
-		$classNamePart = str_replace('/', '_', $stripped);
-		$className = 'Tx_' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
+		$stripped = substr($filename, 0, -4);
+		if ($vendor) {
+			$classNamePart = str_replace('/', '\\', $stripped);
+			$className = $vendor . '\\' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '\\ViewHelpers\\' . $classNamePart;
+		} else {
+			$classNamePart = str_replace('/', '_', $stripped);
+			$className = 'Tx_' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
+		}
 		return $className;
 	}
 
@@ -283,3 +286,5 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	}
 
 }
+
+?>
