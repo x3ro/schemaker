@@ -109,8 +109,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @route NoMatch('bypass')
 	 */
 	public function schemaAction($p1 = NULL, $p2 = NULL, $p3 = NULL, $p4 = NULL, $p5 = NULL) {
-
 		$extensionKey = $this->getExtensionKeySetting();
+		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$namespaceName = str_replace('_', '', $extensionKey);
 		$namespaceName = strtolower($namespaceName);
 		if (isset($this->extensionKeyToNamespaceMap[$extensionKey])) {
@@ -118,8 +118,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		} else {
 			$namespaceAlias = str_replace('_', '', $extensionKey);
 		}
-		$namespaceUrl = 'http://' . ('fluid' === $namespaceName ? 'typo3.org' : 'fedext.net') . '/ns/' . $namespaceName . '/ViewHelpers';;
+		$namespaceUrl = 'http://' . ('fluid' === $namespaceName ? 'typo3.org' : 'fedext.net') . '/ns/' . $namespaceName . '/ViewHelpers';
 		$schemaSource = $this->schemaService->generateXsd($extensionKey, $namespaceUrl, $namespaceAlias);
+
 		switch ($p1) {
 			case 'download-xsd':
 				header('Content-type: text/xml');
@@ -132,10 +133,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				exit();
 			default:
 		}
-
 		$segments = array($p1, $p2, $p3, $p4, $p5);
 		$segments = $this->trimPathSegments($segments);
 		$dirPath = $this->getFolderPathFromSegments($segments);
+
 		$arguments = $this->segmentsToArguments($segments);
 		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
 		$extensionName = ucfirst($extensionName);
@@ -144,19 +145,18 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$namespaceName = $this->extensionKeyToNamespaceMap[$namespaceName];
 		}
 		$tree = $this->buildTree($this->getFolderPathFromSegments(array()));
-		$isFolder = is_dir($dirPath);
 		$isFile = $this->isFile($segments);
-		if ($isFolder) {
-			$subFolders = $this->getSubFolders($dirPath);
-			$files = $this->getViewHelperClassFileBaseNames($dirPath);
-		}
 		if ($isFile) {
-			$className = 'Tx_' . ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey)) . '_ViewHelpers_' . implode('_', $segments);
+			$className = ($vendor ? $vendor . '\\' : '') . t3lib_div::underscoredToUpperCamelCase($extensionKey) . '\\ViewHelpers\\' . implode('\\', $segments);
 			$name = $namespaceName . ':' . implode('.', array_map('lcfirst', $segments));
 			$name = substr($name, 0, -10);
-			if (!class_exists($className)) {
-				$problem = 1;
-			} else {
+			if (FALSE === class_exists($className)) {
+				$className = 'Tx_' . ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey)) . '_ViewHelpers_' . implode('_', $segments);
+				if (FALSE === class_exists($className)) {
+					$problem = 1;
+				}
+			}
+			if (TRUE === class_exists($className)) {
 				/** @var $instance Tx_Fluid_Core_ViewHelper_AbstractViewHelper */
 				$instance = $this->objectManager->create($className);
 				if (is_subclass_of($instance, 'Tx_Fluid_Core_Widget_AbstractWidgetViewHelper')) {
@@ -196,7 +196,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				$docComment = implode("\n", $lines);
 			}
 		}
-		$this->view->assignMultiple(array(
+		$variables = array(
 			'name' => $name,
 			'viewHelperType' => $viewHelperType,
 			'ajaxWidget' => $isAjaxWidget,
@@ -227,7 +227,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			'extensionKey' => $extensionKey,
 			'extensionName' => $extensionName,
 			'counters' => $this->counters
-		));
+		);
+		$this->view->assignMultiple($variables);
 	}
 
 	/**
@@ -281,6 +282,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 */
 	protected function getFolderPathFromSegments($segments) {
 		$extensionKey = $this->getExtensionKeySetting();
+		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$dirPathRelativeFromExtension = t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/' . implode('/', $segments));
 		return $dirPathRelativeFromExtension;
 	}
@@ -316,6 +318,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$classes = $this->getViewHelperClassFileBaseNames($dirPath);
 		$classes = array_combine($classes, $classes);
 		$extensionKey = $this->getExtensionKeySetting();
+		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$extensionName = ucfirst(t3lib_div::camelCaseToLowerCaseUnderscored($extensionKey));
 		foreach ($classes as $class) {
 			$className = 'Tx_' . $extensionName . '_ViewHelpers_' . implode('_', $segments) . (count($segments) > 0 ? '_' : '') . $class;
@@ -379,7 +382,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @param boolean $onlyRequired
 	 * @return string
 	 */
-	protected function buildInlineExample($className, $arguments, $onlyRequired) {
+	protected function buildInlineExample($className, $arguments, $onlyRequired = FALSE) {
 		$name = $this->buildViewHelperTemplateSyntax($className);
 		$example = '{' . $name . '(';
 		$argumentsRendered = FALSE;

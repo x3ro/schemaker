@@ -84,19 +84,16 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	/**
 	 * Get all class names inside this namespace and return them as array.
 	 *
-	 * @param string $extensionKey
+	 * @param string $combinedExtensionKey Extension Key with (possibly) leading Vendor Prefix
 	 * @return array
 	 */
-	protected function getClassNamesInExtension($extensionKey) {
+	protected function getClassNamesInExtension($combinedExtensionKey) {
 		$allViewHelperClassNames = array();
+		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
 		$path = t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/');
 		$filesInPath = t3lib_div::getAllFilesAndFoldersInPath(array(), $path, 'php');
-		$pathLength = strlen($path);
 		foreach ($filesInPath as $filePathAndFilename) {
-			$stripped = substr($filePathAndFilename, $pathLength);
-			$stripped = substr($stripped, 0, -4);
-			$classNamePart = str_replace('/', '_', $stripped);
-			$className = 'Tx_' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
+			$className = $this->getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filePathAndFilename);
 			if (class_exists($className)) {
 				$parent = $className;
 				while ($parent = get_parent_class($parent)) {
@@ -106,7 +103,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 				}
 			}
 		}
-
+		$affectedViewHelperClassNames = array();
 		foreach ($allViewHelperClassNames as $viewHelperClassName) {
 			$classReflection = new ReflectionClass($viewHelperClassName);
 			if ($classReflection->isAbstract() === TRUE) {
@@ -129,8 +126,9 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * @return string
 	 */
 	protected function getTagNameForClass($className) {
+		$separator = FALSE !== strpos($className, '\\') ? '\\' : '_';
 		$className = substr($className, 0, -10);
-		$classNameParts = explode('_', $className);
+		$classNameParts = explode($separator, $className);
 		$classNameParts = array_slice($classNameParts, 3);
 		$classNameParts = array_map('lcfirst', $classNameParts);
 		$tagName = implode('.', $classNameParts);
@@ -148,7 +146,6 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	protected function addChildWithCData(SimpleXMLElement $parentXmlNode, $childNodeName, $childNodeValue) {
 		$parentDomNode = dom_import_simplexml($parentXmlNode);
 		$domDocument = new DOMDocument();
-
 		$childNode = $domDocument->appendChild($domDocument->createElement($childNodeName));
 		$childNode->appendChild($domDocument->createCDATASection($childNodeValue));
 		$childNodeTarget = $parentDomNode->ownerDocument->importNode($childNode, TRUE);
@@ -166,22 +163,15 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * @throws Exception
 	 */
 	public function generateXsd($extensionKey, $xsdNamespace, $namespaceAlias = NULL) {
-		if (t3lib_extMgm::isLoaded($extensionKey) === FALSE) {
-			throw new Exception('Extension key "' . $extensionKey . '" is not loaded', 1353200005);
-		}
-
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
 			throw new Exception(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
 		}
-
 		$xmlRootNode = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
 			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
-
 		foreach ($classNames as $className) {
 			$this->generateXmlForClassName($className, $xmlRootNode);
 		}
-
 		return $xmlRootNode->asXML();
 	}
 
@@ -250,4 +240,51 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 		$this->addChildWithCData($xsdAnnotation, 'xsd:documentation', $documentation);
 	}
 
+	/**
+	 * Returns the true class name of the ViewHelper as defined
+	 * by the extensionKey (which may be vendorname.extensionkey)
+	 * and the class name. If vendorname is used, namespaced
+	 * classes are assumed. If no vendorname is used a namespaced
+	 * class is first attempted, if this does not exist the old
+	 * Tx_ prefixed class name is tried. If this too does not exist,
+	 * an Exception is thrown.
+	 *
+	 * @param string $combinedExtensionKey
+	 * @param string $className
+	 * @return string
+	 * @throws Exception
+	 */
+	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
+		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
+		$filename = str_replace(t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/'), '', $filename);
+		$stripped = substr($filename, 0, -4);
+		if ($vendor) {
+			$classNamePart = str_replace('/', '\\', $stripped);
+			$className = $vendor . '\\' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '\\ViewHelpers\\' . $classNamePart;
+		} else {
+			$classNamePart = str_replace('/', '_', $stripped);
+			$className = 'Tx_' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
+		}
+		return $className;
+	}
+
+	/**
+	 * @param string $extensionKey
+	 * @return array
+	 */
+	public function getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey) {
+		if (FALSE !== strpos($extensionKey, '.')) {
+			list ($vendor, $extensionKey) = explode('.', $extensionKey);
+			if ('TYPO3' === $vendor) {
+				$vendor = 'TYPO3\\CMS';
+			}
+		} else {
+			$vendor = NULL;
+		}
+		$extensionKey = strtolower($extensionKey);
+		return array($vendor, $extensionKey);
+	}
+
 }
+
+?>
