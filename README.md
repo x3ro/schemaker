@@ -1,5 +1,5 @@
-Schemaker: Fluid ViewHelper XSD Schema Generator
-================================================
+Fluid ViewHelper XSD Schema Generator
+=====================================
 
 > Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
 
