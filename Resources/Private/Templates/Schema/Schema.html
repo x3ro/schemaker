@@ -172,6 +172,10 @@
 		<h4>{f:if(condition: ajaxWidget, then: 'AJAX ')}{viewHelperType}</h4>
 	</div>
 	<h2><i class="icon icon-chevron-left"></i> {name} <i class="icon icon-chevron-right"></i></h2>
+	<p>
+		<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#description">Description</a>
+		<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#examples">Examples</a>
+	</p>
 	<f:if condition="{displayHeadsUp}">
 		<div class="alert alert-warning">
 			<h3 class="alert-heading">Heads up! <small>This ViewHelper has advanced features</small></h3>
@@ -235,6 +239,8 @@
 			</f:for>
 		</tbody>
 	</table>
+	<a name="description"></a>
+	<h3>Description</h3>
 	<f:if condition="{markdownBlacklisted}">
 		<f:then>
 			{docComment
@@ -250,6 +256,7 @@
 			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">') -> v:format.tidy()}
 		</f:else>
 	</f:if>
+	<a name="examples"></a>
 	<h3>Usage</h3>
 	<pre class="prettyprint lang-html linenums:1">
 <f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:format.raw>}</f:format.raw></f:format.htmlentities>
