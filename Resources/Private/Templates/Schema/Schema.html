@@ -199,39 +199,6 @@
 			</ul>
 		</div>
 	</f:if>
-	<f:if condition="{markdownBlacklisted}">
-		<f:then>
-			{docComment
-			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint linenums:1"')
-			-> v:format.replace(substring: '</code>', replacement: '</pre>')
-			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
-			-> v:format.replace(substring: '</output>', replacement: '</pre>')
-			-> f:format.html() -> v:format.tidy()}
-		</f:then>
-		<f:else>
-			{docComment
-			-> v:format.markdown()
-			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">') -> v:format.tidy()}
-		</f:else>
-	</f:if>
-	<h3>Usage</h3>
-	<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:format.raw>}</f:format.raw></f:format.htmlentities>
-
-<f:format.htmlentities><!-- Tag-based usage --></f:format.htmlentities>
-{tagExample}
-
-<f:format.htmlentities><!-- Tag-based usage, required arguments only --></f:format.htmlentities>
-{tagExampleRequired}
-
-<f:format.htmlentities><!-- Tag-based usage, self-closing w/o tag content usage, required arguments only --></f:format.htmlentities>
-{tagExampleSelfClosingRequired}
-<f:if condition="{tagBased} < 1">
-<f:format.htmlentities><!-- Inline usage --></f:format.htmlentities>
-{inlineExample}
-<f:format.htmlentities><!-- Inline usage , required arguments only--></f:format.htmlentities>
-{inlineExampleRequired}
-</f:if></pre>
 	<h2>Attributes</h2>
 	<ul class="unstyled">
 		<li>
@@ -268,6 +235,39 @@
 			</f:for>
 		</tbody>
 	</table>
+	<f:if condition="{markdownBlacklisted}">
+		<f:then>
+			{docComment
+			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint linenums:1"')
+			-> v:format.replace(substring: '</code>', replacement: '</pre>')
+			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
+			-> v:format.replace(substring: '</output>', replacement: '</pre>')
+			-> f:format.html() -> v:format.tidy()}
+		</f:then>
+		<f:else>
+			{docComment
+			-> v:format.markdown()
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">') -> v:format.tidy()}
+		</f:else>
+	</f:if>
+	<h3>Usage</h3>
+	<pre class="prettyprint lang-html linenums:1">
+<f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:format.raw>}</f:format.raw></f:format.htmlentities>
+
+<f:format.htmlentities><!-- Tag-based usage --></f:format.htmlentities>
+{tagExample}
+
+<f:format.htmlentities><!-- Tag-based usage, required arguments only --></f:format.htmlentities>
+{tagExampleRequired}
+
+<f:format.htmlentities><!-- Tag-based usage, self-closing w/o tag content usage, required arguments only --></f:format.htmlentities>
+{tagExampleSelfClosingRequired}
+<f:if condition="{tagBased} < 1">
+<f:format.htmlentities><!-- Inline usage --></f:format.htmlentities>
+{inlineExample}
+<f:format.htmlentities><!-- Inline usage , required arguments only--></f:format.htmlentities>
+{inlineExampleRequired}
+</f:if></pre>
 </f:section>
 
 <f:section name="Link">
