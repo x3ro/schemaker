@@ -250,7 +250,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * an Exception is thrown.
 	 *
 	 * @param string $combinedExtensionKey
-	 * @param string $className
+	 * @param string $filename
 	 * @return string
 	 * @throws Exception
 	 */
