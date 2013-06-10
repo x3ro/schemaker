@@ -79,7 +79,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	/**
 	 * @var array
 	 */
-	protected $extensionKeyToNamespaceMap = array('fluid' => 'f', 'vhs' => 'v', 'fluidwidget' => 'w');
+	protected $extensionKeyToNamespaceMap = array('fluid' => 'f', 'vhs' => 'v', 'fluidwidget' => 'w', 'fluidbackend' => 'be');
 
 	/**
 	 * @var array
