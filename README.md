@@ -5,6 +5,14 @@ Fluid ViewHelper XSD Schema Generator
 
 [![Build Status](https://travis-ci.org/FluidTYPO3/schemaker.png?branch=master)](https://travis-ci.org/FluidTYPO3/schemaker)
 
+## Code Quality
+
+![Abstraction Instability Chart](Documentation/ComplexityChart.png)
+![Inheritance and dependency risk](Documentation/PyramidChart.png)
+
+_Understanding the [Abstraction Instability Chart](http://pdepend.org/documentation/handbook/reports/abstraction-instability-chart.html)
+and [Pyramid Chart](http://pdepend.org/documentation/handbook/reports/overview-pyramid.html)._
+
 ## Why use it?
 
 To name just a few reasons:
