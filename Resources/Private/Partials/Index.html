@@ -1,0 +1,33 @@
+{namespace v=Tx_Vhs_ViewHelpers}
+<v:if.type.isArray value="{tree}">
+	<f:then>
+		{arguments -> f:count() -> v:math.subtract(b: 1) -> v:var.set(name: 'index')}
+		<div class="viewhelper-group{f:if(condition: sub, else: ' root')}">
+			<f:if condition="{sub}">
+				<f:then>
+					<h4 class="viewhelper-group-toggle">
+						<i class="icon icon-folder-open folder-icon"></i>
+						{key}
+					</h4>
+				</f:then>
+				<f:else>
+					<i class="viewhelper-group-toggle"></i>
+				</f:else>
+			</f:if>
+			<ul class="nav nav-list nav-stacked viewhelper-group-tree">
+				<f:for each="{tree}" as="branch" key="folder">
+					{folder -> v:var.set(name: 'arguments.p{index}')}
+					<li>
+						<f:render partial="Index" arguments="{tree: branch, extensionKey: extensionKey, version: version, arguments: arguments, key: folder, sub: 1}" />
+					</li>
+				</f:for>
+			</ul>
+		</div>
+	</f:then>
+	<f:else>
+		{arguments -> f:count() -> v:math.subtract(b: 2) -> v:var.set(name: 'index')}
+		{tree -> v:var.set(name: 'arguments.p{index}')}
+		{tree -> v:format.substring(length: '-10') -> v:var.set(name: 'text')}
+		<f:render partial="Link" arguments="{arguments: arguments, text: text, icon: 'file'}" />
+	</f:else>
+</v:if.type.isArray>
