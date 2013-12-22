@@ -1,5 +1,12 @@
-plugin.tx_schemaker.view {
-	templateRootPath = EXT:schemaker/Resources/Private/Templates/
-	partialRootPath = EXT:schemaker/Resources/Private/Partials/
-	layoutRootPath = EXT:schemaker/Resources/Private/Layouts/
+plugin.tx_schemaker {
+	settings {
+		extensionKey = vhs
+		extensionKeys = vhs, flux
+		xsdStoragePath = fileadmin/schemas/
+	}
+	view {
+		templateRootPath = EXT:schemaker/Resources/Private/Templates/
+		partialRootPath = EXT:schemaker/Resources/Private/Partials/
+		layoutRootPath = EXT:schemaker/Resources/Private/Layouts/
+	}
 }

@@ -1,0 +1,11 @@
+{namespace v=Tx_Vhs_ViewHelpers}
+<f:link.action action="schema" arguments="{arguments}" id="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}" name="{dataClass -> v:format.url.sanitizeString()}">
+	<f:if condition="{icon}">
+		<f:then>
+			<i class="icon icon-{icon}"></i> {text}
+		</f:then>
+		<f:else>
+			{text}
+		</f:else>
+	</f:if>
+</f:link.action>
