@@ -156,9 +156,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 
 		$className = implode('/', $segments);
+		$extensionPath = t3lib_extMgm::extPath($extensionKey);
 		if (FALSE === empty($className)) {
 			$relativeFilename = 'Classes/ViewHelpers/' . $className . '.php';
-			$extensionPath = t3lib_extMgm::extPath($extensionKey);
 			$historyCacheFile = t3lib_div::getFileAbsFileName('typo3temp/schemaker-git-log-' . str_replace('/', '-', $relativeFilename) . '.log');
 			if (TRUE === file_exists($historyCacheFile) && (time() - 21600) < filemtime($historyCacheFile)) {
 				$history = file_get_contents($historyCacheFile);
@@ -168,9 +168,17 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				$history = preg_replace('/(([a-z0-9\.^\s]+)@([a-z0-9\.^\s]+))/u', '*****@$3', $history);
 				t3lib_div::writeFile($historyCacheFile, $history);
 			}
+		} else {
+			$readmeFile = $extensionPath . 'Classes/ViewHelpers/README.md';
+			if (TRUE === file_exists($readmeFile)) {
+				$readmeFile = file_get_contents($readmeFile);
+			} else {
+				unset($readmeFile);
+			}
 		}
 
 		$variables = array(
+			'readmeFile' => $readmeFile,
 			'history' => $history,
 			'name' => end($segments),
 			'schemaFile' => $relativeSchemaFile,

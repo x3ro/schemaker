@@ -35,3 +35,11 @@
 	</div>
 </div>
 </div>
+
+<f:if condition="{readmeFile}">
+	<div class="row-fluid">
+		<div class="span12">
+			{readmeFile -> v:format.markdown()}
+		</div>
+	</div>
+</f:if>
