@@ -14,27 +14,27 @@
 	<f:if condition="{markdownBlacklisted}">
 		<f:then>
 			{docComment
-			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint linenums:1"')
+			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint lang-xml"')
 			-> v:format.replace(substring: '</code>', replacement: '</pre>')
-			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
+			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint lang-xml">')
 			-> v:format.replace(substring: '</output>', replacement: '</pre>')
 			-> f:format.html()}
 		</f:then>
 		<f:else>
 			{docComment
 			-> v:format.markdown()
-			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">')}
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint lang-xml">')}
 		</f:else>
 	</f:if>
 </f:if>
 <ul class="list-unstyled examples">
 	<li>
 		<h4>Tag usage example</h4>
-		<pre class="prettyprint linenums:1">{tagExample}</pre>
+		<pre class="prettyprint lang-xml">{tagExample}</pre>
 	</li>
 	<li>
 		<h4>Inline usage example</h4>
-		<pre class="prettyprint linenums:1">{inlineExample}</pre>
+		<pre class="prettyprint lang-xml">{inlineExample}</pre>
 	</li>
 </ul>
 <a name="arguments"></a>

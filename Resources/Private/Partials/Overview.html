@@ -1,7 +1,7 @@
 {namespace v=Tx_Vhs_ViewHelpers}
 
 <h4>Using the <code>&lt;html&gt;</code> tag</h4>
-<pre class="prettyprint lang-html linenums:1">
+<pre class="prettyprint lang-xml">
 <f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
@@ -17,7 +17,7 @@
 </body>
 </html></f:format.htmlentities></pre>
 		<h4>Using a <code>&lt;div&gt;</code> or other standard tag</h4>
-		<pre class="prettyprint lang-html linenums:1">
+		<pre class="prettyprint lang-xml">
 <f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="{v:site.url()}{schemaFile}"
