@@ -53,7 +53,7 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 	 * in your Fluid template by adding the xmlns:* attribute(s):
 	 * <html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers" ...>
 	 *
-	 * @param string $extensionKey Namespace of the Fluid ViewHelpers without leading backslash (for example 'TYPO3\Fluid\ViewHelpers'). NOTE: Quote and/or escape this argument as needed to avoid backslashes from being interpreted!
+	 * @param string $extensionKey Extension key of generated extension. If namespaces are desired, the extension key should be in the format VendorName.ExtensionName (e.g. UpperCamelCase, dot-containing, no underscores)
 	 * @param string $xsdNamespace Unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers"). Defaults to "http://typo3.org/ns/<php namespace>".
 	 * @return void
 	 */
