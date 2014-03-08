@@ -1,14 +1,11 @@
 {namespace v=Tx_Vhs_ViewHelpers}
 
 <v:asset.style name="schemaker" path="{f:uri.resource(path: 'Stylesheet/Application.css')}" />
-<v:asset.script name="schemaker-script" dependencies="jquery" path="{f:uri.resource(path: 'Javascript/Application.js')}" />
+<v:asset.script name="schemakerScript" dependencies="jquery" path="{f:uri.resource(path: 'Javascript/Application.js')}" />
 <input type="hidden" id="viewing-classname" value="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}" />
 
-<div class="page-header">
-	<h2>ViewHelper Reference <small>{extensionKey}, version <em>{version}</em></small></h2>
-</div>
-<div class="row-fluid">
-	<div class="span3">
+<div class="row">
+	<div class="col-md-3 form-group">
 		<div class="form-selectors">
 			<fieldset>
 				<f:render section="Extensions" arguments="{_all}" />
@@ -16,16 +13,16 @@
 			</fieldset>
 		</div>
 		<p>
-			<a class="btn btn-block btn-small btn-inverse" href="{schemaFile}"><i class="icon icon-download-alt"></i> XSD schema file <span class="muted">| {extensionKey} <em>{version}</em></span></a>
+			<a class="btn btn-block btn-large btn-primary" href="{schemaFile}"><i class="icon icon-download-alt"></i> XSD schema file <span class="muted">| {extensionKey} <em>{version}</em></span></a>
 		</p>
 		<div class="form-selectors">
 			<fieldset>
-				<input id="viewhelper-filter" type="text" placeholder="Filter ViewHelpers" tabindex="1" />
+				<input id="viewhelper-filter" type="text" class="form-control" placeholder="Filter ViewHelpers" tabindex="1" />
 			</fieldset>
 		</div>
 		<f:render partial="Index" arguments="{tree: tree, extensionKey: extensionKey, version: version, arguments: {extensionKey: extensionKey, version: version}}" />
 	</div>
-	<div class="span9">
+	<div class="col-md-9">
 		<f:if condition="{isFile}">
 			<f:then>
 				<f:render partial="Class" arguments="{_all}" />
@@ -39,7 +36,7 @@
 
 <f:section name="Extensions">
 	<f:if condition="0 < {extensionKeys -> f:count()}">
-		<select id="extensionSelector" tabindex="2" class="input-small">
+		<select id="extensionSelector" tabindex="2" class="form-control">
 			<f:for each="{extensionKeys}" as="selectableExtensionKey">
 				<option data-url="{f:uri.action(arguments: '{extensionKey: selectableExtensionKey, version: \'master\'}')}"
 					{f:if(condition: '{selectableExtensionKey} == {extensionKey}', then: ' selected="selected"')}>{selectableExtensionKey}</option>
@@ -55,7 +52,7 @@
 
 <f:section name="Versions">
 	<f:if condition="0 < {versions -> f:count()}">
-		<select id="versionSelector" tabindex="3" class="input-small">
+		<select id="versionSelector" tabindex="3" class="form-control">
 			<f:for each="{versions}" as="selectableVersion">
 				<option data-url="{f:uri.action(arguments: '{extensionKey: extensionKey, version: selectableVersion}')}"
 					{f:if(condition: '{selectableVersion} == {version}', then: ' selected="selected"')}>{selectableVersion}</option>

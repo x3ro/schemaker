@@ -27,15 +27,21 @@
 		</f:else>
 	</f:if>
 </f:if>
-<ul class="unstyled examples">
-	<li><h4>Tag usage example</h4> <code>{tagExample -> f:format.nl2br()}</code></li>
-	<li><h4>Inline usage example</h4> <code>{inlineExample -> f:format.nl2br()}</code></li>
+<ul class="list-unstyled examples">
+	<li>
+		<h4>Tag usage example</h4>
+		<pre class="prettyprint linenums:1">{tagExample}</pre>
+	</li>
+	<li>
+		<h4>Inline usage example</h4>
+		<pre class="prettyprint linenums:1">{inlineExample}</pre>
+	</li>
 </ul>
 <a name="arguments"></a>
 <h3>Arguments</h3>
 <table class="table table-hover table-bordered">
 	<thead>
-	<tr>
+		<tr>
 			<th>Argument</th>
 			<th>Description</th>
 			<th class="argument-type">Type</th>
@@ -49,7 +55,7 @@
 				<f:if condition="{argument.required}"><i class="icon icon-asterisk"></i></f:if>
 				<f:if condition="{argument.isMethodParameter}"><i class="icon icon-arrow-right"></i></f:if>
 				{argument.name}
-				</td>
+			</td>
 			<td>
 				{argument.description -> v:format.markdown()}
 			</td>

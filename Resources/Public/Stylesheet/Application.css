@@ -4,9 +4,10 @@
 }
 .form-selectors select {
 	width: 49%;
+	display: inline-block;
 }
-.form-selectors input {
-	width: 95%;
+.form-selectors {
+	margin-bottom: 0.5em;
 }
 .nav-list.viewhelper-group-tree {
 	padding-left: 0px;
@@ -18,13 +19,6 @@
 }
 span.alert {
 	display: block;
-}
-pre.prettyprint ol.linenums {
-	margin: 0px 0px 0px 40px;
-}
-pre.prettyprint ol.linenums li {
-	margin-bottom: 4px;
-	font-size: 12px;
 }
 .argument-type, .argument-default-value {
 	width: 20%;

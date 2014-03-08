@@ -1,8 +1,7 @@
 {namespace v=Tx_Vhs_ViewHelpers}
-<div class="row-fluid">
-	<div class="span9">
-		<h4>Using the <code>&lt;html&gt;</code> tag</h4>
-		<pre class="prettyprint lang-html linenums:1">
+
+<h4>Using the <code>&lt;html&gt;</code> tag</h4>
+<pre class="prettyprint lang-html linenums:1">
 <f:format.htmlentities><f:format.raw>{</f:format.raw>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
@@ -25,15 +24,12 @@
      {namespaceName}:schemaLocation="{v:site.url()}{schemaFile} {targetNamespace}">
 	<!-- Fluid goes here, no sections necessary -->
 </div></f:format.htmlentities></pre>
-</div>
-<div class="span3">
-	<h4>Mini guide</h4>
-	<div class="alert alert-info">
-		<p>Download the XSD file or use the URL as <code>{namespaceName}:schemaLocation</code>.</p>
-		<p>Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs.</p>
-		<p>Make sure when referencing your XSD file to always use the same URL for the same XSD file.</p>
-	</div>
-</div>
+
+<h4>Mini guide</h4>
+<div class="alert alert-info">
+	<p>Download the XSD file or use the URL as <code>{namespaceName}:schemaLocation</code>.</p>
+	<p>Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs.</p>
+	<p>Make sure when referencing your XSD file to always use the same URL for the same XSD file.</p>
 </div>
 
 <f:if condition="{readmeFile}">

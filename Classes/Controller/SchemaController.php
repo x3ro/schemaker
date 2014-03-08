@@ -115,17 +115,6 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			'p4' => $p4,
 			'p5' => $p5
 		);
-		if ((NULL !== $extensionKey && NULL === $version) || FALSE === $schemaFileExists) {
-			if (FALSE === $schemaFileExists && NULL !== $version) {
-				$requestArguments['p1'] = $version;
-				$requestArguments['p2'] = $p1;
-				$requestArguments['p3'] = $p2;
-				$requestArguments['p4'] = $p3;
-				$requestArguments['p5'] = $p4;
-			}
-			$this->forward('schema', NULL, NULL, $requestArguments);
-		}
-
 		$namespaceName = str_replace('_', '', $extensionKey);
 		$namespaceName = strtolower($namespaceName);
 		$namespaceAlias = str_replace('_', '', $extensionKey);
@@ -137,6 +126,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 
 		$segments = array($p1, $p2, $p3, $p4, $p5);
 		$segments = $this->trimPathSegments($segments);
+		if (TRUE === empty($version)) {
+			$version = 'master';
+		}
 
 		$arguments = $this->segmentsToArguments($extensionKey, $version, $segments);
 		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
@@ -214,6 +206,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @return array
 	 */
 	protected function getSchemaData($extensionKey, $version, $segments) {
+		if (FALSE === \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extensionKey)) {
+			return array();
+		}
 		$baseCacheKey = $extensionKey . $version;
 		$baseCacheKey = preg_replace('/[^a-z0-9]+/i', '-', $baseCacheKey);
 		$cacheKey = $baseCacheKey . implode('', $segments);
@@ -290,7 +285,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @return string
 	 */
 	protected function getExtensionKeySetting() {
-		return TRUE === isset($this->settings['extensionKey']) ? $this->settings['extensionKey'] : $GLOBALS['TSFE']->page['title'];
+		$fallback = (TRUE === \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($GLOBALS['TSFE']->page['title']) ? $GLOBALS['TSFE']->page['title'] : NULL);
+		return TRUE === isset($this->settings['extensionKey']) ? $this->settings['extensionKey'] : $fallback;
 	}
 
 	/**

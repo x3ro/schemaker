@@ -1,7 +1,7 @@
 plugin.tx_schemaker {
 	settings {
-		extensionKey = vhs
-		extensionKeys = vhs, flux
+		extensionKey = fluid
+		extensionKeys = fluid
 		xsdStoragePath = fileadmin/schemas/
 	}
 	view {
