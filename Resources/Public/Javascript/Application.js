@@ -1,62 +1,44 @@
 jQuery(document).ready(function($) {
 	var viewingClass = $('#viewing-classname').val();
-	var touched = false;
+	var timer;
 	$('#extensionSelector, #versionSelector').change(function() {
 		document.location = $(this).find(':selected').attr('data-url');
 		return false;
 	});
-	$('#viewhelper-filter').keyup(function() {
-		var q = $(this).val();
+	function search() {
+		var q = $('#viewhelper-filter').val().toLowerCase();
 		if (typeof q == 'string') {
-		if (q.length == 0 && touched) {
-			$('.viewhelper-group-tree').hide();
-			$('.viewhelper-group').show();
-			$('.viewhelper-group a').each(function() {
-				if ($(this).name == activeLink.name) {
-					expandGroup($(this));
-				};
-				$(this).parents('li:first').show();
-			});
-			$('.viewhelper-group').each(function() {
-				if ($(this).find('li.active').length == 0) {
-					collapseGroup($(this));
-				};
-			});
-		} else if (q.length >= 1) {
-			touched = true;
-			$('.viewhelper-group').each(function() {
-				var group = $(this);
-				var toggle = group.find('.viewhelper-group-toggle:first');
-				var groupTree = group.find('.viewhelper-group-tree:first');
-				groupTree.find('a').each(function() {
+			$('.viewhelper-group:not(.root)').each(expandGroup).hide();
+			$('.viewhelper-group a').parent().show();
+			if (q.length == 0) {
+				$('.viewhelper-group').show().not('.root').each(collapseGroup);
+				expandGroup($('.viewhelper-group li.active').parents('.viewhelper-group:first'));
+			} else if (q.length >= 1) {
+				$('.viewhelper-group.root a').each(function() {
 					var link = $(this);
-					if (link.attr('id').indexOf(q) >= 0) {
+					var group = link.parents('.viewhelper-group:first');
+					link.parent().hide();
+					if (link.attr('id').toLowerCase().indexOf(q) >= 0) {
 						expandGroup(group);
-						link.parents('li:first').show();
-					} else {
-						link.parents('li:first').hide();
+						group.show();
+						link.parent().show();
 					};
 				});
-				if (group.find('li:visible').length == 0) {
-					collapseGroup(group);
-					group.hide();
-				};
-			});
+			};
 		};
 	};
-	}).blur(function() {
-		if ($(this).val().length < 1) {
-			touched = false;
-		};
+	$('#viewhelper-filter').keyup(function() {
+		clearInterval(timer);
+		timer = setTimeout(search, 100);
 	}).tooltip({
 		'title': 'Tip: Use TAB for quick access',
 		'trigger': 'hover'
 	});
-	$('.viewhelper-group').each(function() {
+	$('.viewhelper-group').not('.root').each(function() {
 		var element = $(this);
 		var tree = element.find('.viewhelper-group-tree:first');
 		var toggle = element.find('.viewhelper-group-toggle:first');
-		toggle.find('.folder-icon').removeClass('icon-folder-open').addClass('icon-folder-close');
+		toggle.find('.folder-icon').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close');
 		toggle.click(function() {
 			if (tree.hasClass('open')) {
 				collapseGroup(element, 250);
@@ -64,11 +46,11 @@ jQuery(document).ready(function($) {
 				expandGroup(element, 250);
 			};
 		});
-		tree.find('> li > a').each(function() {
+		tree.find('a.file').each(function() {
 			var link = $(this);
 			var parent = link.parents('.viewhelper-group:first');
 			if (link.attr('id') == viewingClass) {
-				link.parents('li:first').addClass('active');
+				link.parent().addClass('active');
 				expandGroup(element);
 			};
 		});
@@ -80,19 +62,19 @@ jQuery(document).ready(function($) {
 		if (typeof element.find == 'undefined') {
 			var element = $(this);
 		};
-		var tree = element.find('.viewhelper-group-tree:first');
 		var toggle = element.find('.viewhelper-group-toggle:first');
-		toggle.find('.folder-icon').addClass('icon-folder-close').removeClass('icon-folder-open');
+		var tree = element.find('.viewhelper-group-tree:first');
 		if (speed > 0) {
-			toggle.animate({'color': '#333'}, speed);
 			tree.slideUp(speed, function() {
 				tree.removeClass('open');
 			});
 		} else {
-			toggle.css({'color': '#33'});
 			tree.hide();
+			tree.removeClass('open');
 		};
+		toggle.find('.folder-icon').addClass('glyphicon-folder').removeClass('glyphicon-folder-open');
 		element.find('.viewhelper-group').each(collapseGroup);
+		element.removeClass('open');
 	};
 	function expandGroup(element, speed) {
 		if (typeof speed == 'undefined') {
@@ -101,18 +83,22 @@ jQuery(document).ready(function($) {
 		if (typeof element.find == 'undefined') {
 			var element = $(this);
 		};
-		var tree = element.find('.viewhelper-group-tree:first');
 		var toggle = element.find('.viewhelper-group-toggle:first');
-		toggle.find('.folder-icon').addClass('icon-folder-open').removeClass('icon-folder-close');
+		toggle.find('li').show();
+		var tree = element.find('.viewhelper-group-tree:first');
 		if (speed > 0) {
-			toggle.animate({'color': '#08C'}, speed);
 			tree.slideDown(speed, function() {
 				tree.addClass('open');
 			});
 		} else {
-			toggle.css({'color': '#08C'});
 			tree.show();
+			tree.addClass('open');
 		};
-		element.parents('.viewhelper-group:not(.root)').each(expandGroup);
+		toggle.find('.folder-icon').addClass('glyphicon-folder-open').removeClass('glyphicon-folder');
+		var parentGroups = element.parents('.viewhelper-group:first').not('.root');
+		if (0 < parentGroups.length) {
+			expandGroup(parentGroups.first());
+		};
+		element.addClass('open');
 	};
 });

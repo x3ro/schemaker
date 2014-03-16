@@ -15,12 +15,12 @@
 		<p>
 			<a class="btn btn-block btn-large btn-primary" href="{schemaFile}"><i class="icon icon-download-alt"></i> XSD schema file <span class="muted">| {extensionKey} <em>{version}</em></span></a>
 		</p>
-		<div class="form-selectors">
-			<fieldset>
-				<input id="viewhelper-filter" type="text" class="form-control" placeholder="Filter ViewHelpers" tabindex="1" />
-			</fieldset>
-		</div>
-		<f:render partial="Index" arguments="{tree: tree, extensionKey: extensionKey, version: version, arguments: {extensionKey: extensionKey, version: version}}" />
+				<div class="form-selectors">
+					<fieldset>
+						<input id="viewhelper-filter" type="text" class="form-control" placeholder="Filter ViewHelpers" tabindex="1" />
+					</fieldset>
+				</div>
+				<f:render partial="Index" arguments="{tree: tree, extensionKey: extensionKey, version: version, arguments: {extensionKey: extensionKey, version: version}}" />
 	</div>
 	<div class="col-md-9">
 		<f:if condition="{isFile}">

@@ -4,17 +4,13 @@
 		{arguments -> f:count() -> v:math.subtract(b: 1) -> v:var.set(name: 'index')}
 		<div class="viewhelper-group{f:if(condition: sub, else: ' root')}">
 			<f:if condition="{sub}">
-				<f:then>
-					<h4 class="viewhelper-group-toggle">
-						<i class="icon icon-folder-open folder-icon"></i>
-						{key}
-					</h4>
-				</f:then>
-				<f:else>
-					<i class="viewhelper-group-toggle"></i>
-				</f:else>
+				<ul class="nav nav-pills nav-stacked viewhelper-group-toggle">
+					<li>
+						<a href="javascript:;" class="toggle" id="{key}"><i class="glyphicon glyphicon-folder folder-icon"></i> {key}</a>
+					</li>
+				</ul>
 			</f:if>
-			<ul class="nav nav-list nav-stacked viewhelper-group-tree">
+			<ul class="nav nav-pills nav-stacked viewhelper-group-tree">
 				<f:for each="{tree}" as="branch" key="folder">
 					{folder -> v:var.set(name: 'arguments.p{index}')}
 					<li>
@@ -28,6 +24,6 @@
 		{arguments -> f:count() -> v:math.subtract(b: 2) -> v:var.set(name: 'index')}
 		{tree -> v:var.set(name: 'arguments.p{index}')}
 		{tree -> v:format.substring(length: '-10') -> v:var.set(name: 'text')}
-		<f:render partial="Link" arguments="{arguments: arguments, text: text, icon: 'file'}" />
+		<f:render partial="Link" arguments="{arguments: arguments, text: text, icon: '0'}" />
 	</f:else>
 </v:if.type.isArray>

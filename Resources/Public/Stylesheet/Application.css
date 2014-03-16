@@ -13,9 +13,8 @@
 	padding-left: 0px;
 }
 .viewhelper-group-tree .viewhelper-group-tree {
+	margin-left: 18px;
 	display: none;
-	padding-left: 15px;
-
 }
 span.alert {
 	display: block;
@@ -55,4 +54,28 @@ ul.examples code {
 	list-style-type: none;
 	white-space: normal;
 	display: list-item;
+}
+
+.viewhelper-group.open {
+	padding-right: 1em;
+}
+.viewhelper-group.open .viewhelper-group.open {
+	padding-right: 1em;
+}
+.viewhelper-group.open li.active a,
+.viewhelper-group.open a:hover {
+	color: #333;
+}
+.viewhelper-group.open {
+	background-color: rgba(0,50,0,0.03);
+}
+.viewhelper-group.open li.active a,
+.viewhelper-group.open li.active a:hover,
+.viewhelper-group.open a:hover {
+	background-color: rgba(0,50,0,0.08);
+	color: #222;
+}
+.viewhelper-group.root {
+	background-color: transparent;
+	padding-right: 0em;
 }
