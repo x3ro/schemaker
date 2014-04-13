@@ -145,6 +145,9 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 		$schemas = array(
 			'master' => $this->generate($extensionKey)
 		);
+		exec($command, $tags, $code);
+		exec('cd ' . $path . ' && git checkout development && git pull origin development --tags');
+		$schemas['development'] = $this->generate($extensionKey);
 		$output = array();
 		foreach ($tags as $tag) {
 			exec('cd ' . $path . ' && git checkout -b ' . $tag . ' ' . $tag, $output, $code);
