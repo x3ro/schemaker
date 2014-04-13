@@ -101,6 +101,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	public function schemaAction($extensionKey = NULL, $version = NULL, $p1 = NULL, $p2 = NULL, $p3 = NULL, $p4 = NULL, $p5 = NULL) {
 		if (NULL === $extensionKey) {
 			$extensionKey = $this->getExtensionKeySetting();
+			if (NULL === $version) {
+				$version = 'master';
+			}
 		}
 		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$schemaFile = $this->getXsdStoragePathSetting() . $extensionKey . '-' . $version . '.xsd';
@@ -234,9 +237,9 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$tree = $this->buildTreeFromSchema($document);
 			$this->cache->set($baseCacheKey . 'tree', $tree);
 		}
+		$node = $this->findCurrentViewHelperNode($document, $segments);
+		$targetNamespaceUrl = $document->documentElement->getAttribute('targetNamespace');
 		if (0 < count($segments)) {
-			$node = $this->findCurrentViewHelperNode($document, $segments);
-			$targetNamespaceUrl = $document->documentElement->getAttribute('targetNamespace');
 			$viewHelperArguments = $this->makeArgumentDefinitions($node, $extensionKey, $className);
 			$docComment = $node->getElementsByTagName('documentation')->item(0)->nodeValue;
 			$additionalDocumentationFile = t3lib_extMgm::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/README.md');
