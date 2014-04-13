@@ -167,7 +167,8 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 	 */
 	protected function generate($extensionKey, $xsdNamespace = NULL) {
 		if ($xsdNamespace === NULL) {
-			$xsdNamespace = sprintf('http://typo3.org/ns/%s/ViewHelpers', str_replace('_', '/', $extensionKey));
+			$xsdExtensionKeySegment = FALSE !== strpos($extensionKey, '.') ? str_replace('.', '/', $extensionKey) : $extensionKey;
+			$xsdNamespace = sprintf('http://typo3.org/ns/%s/ViewHelpers', $xsdExtensionKeySegment);
 		}
 		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace);
 		if (function_exists('tidy_repair_string') === TRUE) {

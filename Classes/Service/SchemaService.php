@@ -22,6 +22,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Schemaker
@@ -90,16 +92,14 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	protected function getClassNamesInExtension($combinedExtensionKey) {
 		$allViewHelperClassNames = array();
 		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
-		$path = t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/');
-		$filesInPath = t3lib_div::getAllFilesAndFoldersInPath(array(), $path, 'php');
+		$path = ExtensionManagementUtility::extPath($extensionKey, 'Classes/ViewHelpers/');
+		$filesInPath = GeneralUtility::getAllFilesAndFoldersInPath(array(), $path, 'php');
 		foreach ($filesInPath as $filePathAndFilename) {
 			$className = $this->getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filePathAndFilename);
 			if (class_exists($className)) {
 				$parent = $className;
 				while ($parent = get_parent_class($parent)) {
-					if ($parent === 'Tx_Fluid_Core_ViewHelper_AbstractViewHelper' || $parent === 'TYPO3\\CMS\\Fluid\Core\\ViewHelper\\AbstractViewHelper') {
-						array_push($allViewHelperClassNames, $className);
-					}
+					array_push($allViewHelperClassNames, $className);
 				}
 			}
 		}
@@ -109,9 +109,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 			if ($classReflection->isAbstract() === TRUE) {
 				continue;
 			}
-			if (strncmp($namespace, $viewHelperClassName, strlen($namespace)) === 0) {
-				$affectedViewHelperClassNames[] = $viewHelperClassName;
-			}
+			$affectedViewHelperClassNames[] = $viewHelperClassName;
 		}
 		sort($affectedViewHelperClassNames);
 		return $affectedViewHelperClassNames;
@@ -200,7 +198,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 		$xsdSequence = $xsdComplexType->addChild('xsd:sequence');
 		$xsdAny = $xsdSequence->addChild('xsd:any');
 		$xsdAny['minOccurs'] = '0';
-		$xsdAny['maxOccurs'] = 'unbounded';
+		$xsdAny['maxOccurs'] = '1';
 
 		$this->addAttributes($className, $xsdComplexType);
 	}
@@ -219,12 +217,37 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 
 		foreach ($argumentDefinitions as $argumentDefinition) {
 			$xsdAttribute = $xsdElement->addChild('xsd:attribute');
-			$xsdAttribute['type'] = 'xsd:string';
+			$xsdAttribute['type'] = $this->convertPhpTypeToXsdType($argumentDefinition->getType());
 			$xsdAttribute['name'] = $argumentDefinition->getName();
 			$this->addDocumentation($argumentDefinition->getDescription(), $xsdAttribute);
 			if ($argumentDefinition->isRequired()) {
 				$xsdAttribute['use'] = 'required';
 			}
+		}
+	}
+
+	/**
+	 * @param string $type
+	 * @return string
+	 */
+	protected function convertPhpTypeToXsdType($type) {
+		switch ($type) {
+			case 'integer':
+				return 'xsd:integer';
+			case 'float':
+				return 'xsd:float';
+			case 'double':
+				return 'xsd:double';
+			case 'boolean':
+				return 'xsd:boolean';
+			case 'string':
+				return 'xsd:string';
+			case 'array':
+				return 'xsd:array';
+			case 'mixed':
+				return 'xsd:mixed';
+			default:
+				return 'xsd:anySimpleType';
 		}
 	}
 
@@ -256,14 +279,14 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 */
 	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
 		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
-		$filename = str_replace(t3lib_extMgm::extPath($extensionKey, 'Classes/ViewHelpers/'), '', $filename);
+		$filename = str_replace(ExtensionManagementUtility::extPath($extensionKey, 'Classes/ViewHelpers/'), '', $filename);
 		$stripped = substr($filename, 0, -4);
 		if ($vendor) {
 			$classNamePart = str_replace('/', '\\', $stripped);
-			$className = $vendor . '\\' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '\\ViewHelpers\\' . $classNamePart;
+			$className = $vendor . '\\' . ucfirst(GeneralUtility::underscoredToLowerCamelCase($extensionKey)) . '\\ViewHelpers\\' . $classNamePart;
 		} else {
 			$classNamePart = str_replace('/', '_', $stripped);
-			$className = 'Tx_' . ucfirst(t3lib_div::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
+			$className = 'Tx_' . ucfirst(GeneralUtility::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
 		}
 		return $className;
 	}
@@ -281,10 +304,8 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 		} else {
 			$vendor = NULL;
 		}
-		$extensionKey = strtolower($extensionKey);
+		$extensionKey = GeneralUtility::camelCaseToLowerCaseUnderscored($extensionKey);
 		return array($vendor, $extensionKey);
 	}
 
 }
-
-?>
