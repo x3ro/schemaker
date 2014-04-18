@@ -259,7 +259,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * @return void
 	 */
 	protected function addDocumentation($documentation, SimpleXMLElement $xsdParentNode) {
-		$documentation = preg_replace('/[^(\x20-\x7F)]*/', '', $documentation);
+		$documentation = preg_replace('/[^(\x00-\x7F)]*/','', $documentation);
 		$xsdAnnotation = $xsdParentNode->addChild('xsd:annotation');
 		$this->addChildWithCData($xsdAnnotation, 'xsd:documentation', $documentation);
 	}
