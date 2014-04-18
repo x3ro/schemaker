@@ -213,16 +213,21 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 */
 	protected function addAttributes($className, SimpleXMLElement $xsdElement) {
 		$viewHelper = $this->objectManager->get($className);
+		/** @var \TYPO3\CMS\Fluid\Core\ViewHelper\ArgumentDefinition[] $argumentDefinitions */
 		$argumentDefinitions = $viewHelper->prepareArguments();
 
 		foreach ($argumentDefinitions as $argumentDefinition) {
+			$default = $argumentDefinition->getDefaultValue();
+			$type = $argumentDefinition->getType();
 			$xsdAttribute = $xsdElement->addChild('xsd:attribute');
-			$xsdAttribute['type'] = $this->convertPhpTypeToXsdType($argumentDefinition->getType());
+			$xsdAttribute['type'] = $this->convertPhpTypeToXsdType($type);
 			$xsdAttribute['name'] = $argumentDefinition->getName();
-			$this->addDocumentation($argumentDefinition->getDescription(), $xsdAttribute);
+			$xsdAttribute['default'] = var_export($default, TRUE);
+			$xsdAttribute['php:type'] = $type;
 			if ($argumentDefinition->isRequired()) {
 				$xsdAttribute['use'] = 'required';
 			}
+			$this->addDocumentation($argumentDefinition->getDescription(), $xsdAttribute);
 		}
 	}
 

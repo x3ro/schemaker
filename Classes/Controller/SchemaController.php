@@ -457,6 +457,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 			$complexType = 'xsd:complexType' === $attribute->parentNode->tagName ? $attribute->parentNode : NULL;
 			$name = $attribute->getAttribute('name');
 			$type = array_pop(explode(':', $attribute->getAttribute('type')));
+			if ($attribute->getAttribute('php:type')) {
+				$type = $attribute->getAttribute('php:type');
+			}
+			$default = $attribute->getAttribute('default');
 			$description = $attribute->getElementsByTagName('documentation')->item(0)->nodeValue;
 			$additionalDocumentationFile = t3lib_extMgm::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/Arguments/' . $name . '.md');
 			if (TRUE === file_exists($additionalDocumentationFile)) {
@@ -465,12 +469,8 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				$additionalDocumentation = preg_replace($pattern, $url . '#argument-$1', $additionalDocumentation);
 				$description .= LF . LF . $additionalDocumentation;
 			}
-			if (NULL === $complexType) {
-				$required = FALSE;
-			} else {
-				$required = (boolean) $complexType->getElementsByTagName('any')->item(0)->getAttribute('minOccurs');
-			}
-			$definition = new Tx_Fluid_Core_ViewHelper_ArgumentDefinition($name, $type, $description, $required);
+			$required = (boolean) ($complexType->getElementsByTagName('any')->item(0)->getAttribute('minOccurs') || 'required' === $attribute->getAttribute('use'));
+			$definition = new Tx_Fluid_Core_ViewHelper_ArgumentDefinition($name, $type, $description, $required, $default);
 			$definitions[$name] = $definition;
 		}
 		return $definitions;
