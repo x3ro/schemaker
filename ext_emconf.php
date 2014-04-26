@@ -14,9 +14,9 @@ $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Schemaker: Fluid ViewHelper Schema Generator',
 	'description' => 'Generates XSD schemas (and optional browsable schema as FE plugin) for the ViewHelpers in any installed extension in its current version. See: https://github.com/NamelessCoder/schemaker',
 	'category' => 'misc',
-	'author' => 'Claus Due',
-	'author_email' => 'claus@wildside.dk',
-	'author_company' => 'Wildside A/S',
+	'author' => 'FluidTYPO3 Team',
+	'author_email' => 'claus@namelesscoder.net',
+	'author_company' => '',
 	'shy' => '',
 	'dependencies' => 'cms,extbase,fluid',
 	'conflicts' => '',
@@ -32,7 +32,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'version' => '2.1.0',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '4.5-0.0.0',
+			'typo3' => '6.1.0-6.2.99',
 			'cms' => '',
 			'extbase' => '',
 			'fluid' => '',
@@ -40,6 +40,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'conflicts' => array(
 		),
 		'suggests' => array(
+			'vhs' => ''
 		),
 	),
 	'suggests' => array(
