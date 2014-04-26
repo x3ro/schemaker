@@ -1,0 +1,77 @@
+{namespace v=Tx_Vhs_ViewHelpers}
+
+<div class="pull-right">Jump to:&nbsp;
+	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#description">Description</a>
+	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#arguments">Arguments</a>
+	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#history">History</a>
+</div>
+<h2>
+	{arguments -> v:iterator.slice(start: 2) -> v:iterator.implode(glue: ' / ')}
+</h2>
+
+<a name="description"></a>
+<f:if condition="{docComment -> v:format.trim()}">
+	<f:if condition="{markdownBlacklisted}">
+		<f:then>
+			{docComment
+			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint lang-xml"')
+			-> v:format.replace(substring: '</code>', replacement: '</pre>')
+			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint lang-xml">')
+			-> v:format.replace(substring: '</output>', replacement: '</pre>')
+			-> f:format.html()}
+		</f:then>
+		<f:else>
+			{docComment
+			-> v:format.markdown()
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint lang-xml">')}
+		</f:else>
+	</f:if>
+</f:if>
+<ul class="list-unstyled examples">
+	<li>
+		<h4>Tag usage example</h4>
+		<pre class="prettyprint lang-xml">{tagExample}</pre>
+	</li>
+	<li>
+		<h4>Inline usage example</h4>
+		<pre class="prettyprint lang-xml">{inlineExample}</pre>
+	</li>
+</ul>
+<a name="arguments"></a>
+<h3>Arguments</h3>
+<table class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<th>Argument</th>
+			<th>Description</th>
+			<th class="argument-type">Type</th>
+		</tr>
+	</thead>
+	<tbody>
+	<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
+		<tr>
+			<td>
+				<a name="argument-{argument.name}"></a>
+				<f:if condition="{argument.required}"><i class="icon icon-asterisk"></i></f:if>
+				<f:if condition="{argument.isMethodParameter}"><i class="icon icon-arrow-right"></i></f:if>
+				{argument.name}
+			</td>
+			<td>
+				{argument.description -> v:format.markdown()}
+			</td>
+			<td>{argument.type}</td>
+		</tr>
+	</f:for>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<i class="icon icon-asterisk"></i> Required attribute
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<a name="history"></a>
+<h3>Revision history</h3>
+<pre>{history -> f:format.htmlentities()}</pre>

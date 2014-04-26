@@ -1,9 +1,17 @@
-Schemaker: Fluid ViewHelper XSD Schema Generator
-================================================
+Fluid ViewHelper XSD Schema Generator
+=====================================
 
-## What is it?
+> Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
 
-Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
+[![Build Status](https://travis-ci.org/FluidTYPO3/schemaker.png?branch=master)](https://travis-ci.org/FluidTYPO3/schemaker)
+
+## Code Quality
+
+![Abstraction Instability Chart](Documentation/ComplexityChart.png)
+![Inheritance and dependency risk](Documentation/PyramidChart.png)
+
+_Understanding the [Abstraction Instability Chart](http://pdepend.org/documentation/handbook/reports/abstraction-instability-chart.html)
+and [Pyramid Chart](http://pdepend.org/documentation/handbook/reports/overview-pyramid.html)._
 
 ## Why use it?
 

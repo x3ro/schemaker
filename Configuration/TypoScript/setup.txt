@@ -1,0 +1,12 @@
+plugin.tx_schemaker {
+	settings {
+		extensionKey = fluid
+		extensionKeys = fluid
+		xsdStoragePath = fileadmin/schemas/
+	}
+	view {
+		templateRootPath = EXT:schemaker/Resources/Private/Templates/
+		partialRootPath = EXT:schemaker/Resources/Private/Partials/
+		layoutRootPath = EXT:schemaker/Resources/Private/Layouts/
+	}
+}
