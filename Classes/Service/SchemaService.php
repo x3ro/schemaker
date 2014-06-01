@@ -166,7 +166,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 			throw new Exception(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
 		}
 		$xmlRootNode = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
+			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:php="http://www.php.net/" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
 		foreach ($classNames as $className) {
 			$this->generateXmlForClassName($className, $xmlRootNode);
 		}
