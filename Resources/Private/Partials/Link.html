@@ -1,4 +1,4 @@
-{namespace v=Tx_Vhs_ViewHelpers}
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <f:link.action action="schema" arguments="{arguments}" id="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}"
                class="file" name="{dataClass -> v:format.url.sanitizeString()}">
 	<f:if condition="{icon}">
