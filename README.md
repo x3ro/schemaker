@@ -83,7 +83,7 @@ referenced in each file. The key is to always make sure the XSD is associated 10
 slashes also count!):
 
 ```html
-{namespace v=Tx_Vhs_ViewHelpers}
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
@@ -121,7 +121,7 @@ HTML tag is not being used. Other IDEs may require that the standard way (XML he
 used. If your particular IDE does not require this approach, you should be able to use as such:
 
 ```html
-{namespace v=Tx_Vhs_ViewHelpers}
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
 	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
@@ -145,7 +145,7 @@ render the Partial:
 And construct the Partial template itself as such:
 
 ```html
-{namespace v=Tx_Vhs_ViewHelpers}
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
