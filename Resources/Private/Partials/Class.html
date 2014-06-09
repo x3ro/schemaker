@@ -1,10 +1,13 @@
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 
 <div class="pull-right">Jump to:&nbsp;
-	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#description">Description</a>
-	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#arguments">Arguments</a>
-	<i class="icon icon-chevron-down"></i> <a href="{v:page.absoluteUrl()}#history">History</a>
+	<a href="{v:page.absoluteUrl()}#description"><i class="fa fa-file-text"></i> Description</a>&nbsp;
+	<a href="{v:page.absoluteUrl()}#arguments"><i class="fa fa-list-ul "></i> Arguments</a>&nbsp;
+	<a href="{v:page.absoluteUrl()}#history"><i class="fa fa-history"></i> History</a>&nbsp;
+	<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
+	<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
 </div>
+<div class="clearfix"></div>
 <h2>
 	{arguments -> v:iterator.slice(start: 2) -> v:iterator.implode(glue: ' / ')}
 </h2>
