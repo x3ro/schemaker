@@ -17,11 +17,13 @@
 	<f:if condition="{markdownBlacklisted}">
 		<f:then>
 			{docComment
-			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint lang-xml"')
-			-> v:format.replace(substring: '</code>', replacement: '</pre>')
-			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint lang-xml">')
-			-> v:format.replace(substring: '</output>', replacement: '</pre>')
-			-> f:format.html()}
+			-> v:format.regularExpression(pattern: '/<(\/?)f\:(.*)>/Us', replacement: '&lt;$1f:$2&gt;')
+			-> v:format.regularExpression(pattern: '/^[=\ ]{1,}(\w+)[=\ ]{1,}$/m', replacement: '<h3>$1</h3>')
+			-> v:format.regularExpression(pattern: '/<code\ title="(.*)">(.*)<\/code>/Us', replacement: '<h4>$1</h4><pre class="prettyprint lang-xml">$2</pre>')
+			-> v:format.regularExpression(pattern: '/<output>(.*)<\/output>/Us', replacement: '<h4>Output</h4><pre class="prettyprint lang-xml">$1</pre><br />')
+			-> v:format.regularExpression(pattern: '/\\n([a-zA-Z0-9\-\*]{1,})/Us', replacement: '<br />$1')
+			-> v:format.regularExpression(pattern: '/(lang\-xml\">)<br \/>/Us', replacement: '$1')
+			-> f:format.raw()}
 		</f:then>
 		<f:else>
 			{docComment
