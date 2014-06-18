@@ -141,12 +141,12 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 		$path = t3lib_extMgm::extPath($extensionKey);
 		$command = 'cd ' . $path . ' && git fetch --all && git tag';
 		exec($command, $tags, $code);
-		exec('cd ' . $path . ' && git checkout master && git reset --hard && git pull origin master --tags');
+		exec('cd ' . $path . ' && git checkout master && git reset --hard && git clean -qfdx && git pull origin master --tags');
 		$schemas = array(
 			'master' => $this->generate($extensionKey)
 		);
 		exec($command, $tags, $code);
-		exec('cd ' . $path . ' && git checkout development && git reset --hard && git pull origin development --tags');
+		exec('cd ' . $path . ' && git checkout development && git reset --hard && git clean -qfdx && git pull origin development --tags');
 		$schemas['development'] = $this->generate($extensionKey);
 		$output = array();
 		foreach ($tags as $tag) {
