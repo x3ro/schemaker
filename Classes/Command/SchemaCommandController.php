@@ -139,7 +139,7 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 		$tags = array();
 		$code = 0;
 		$path = t3lib_extMgm::extPath($extensionKey);
-		$command = 'cd ' . $path . ' && git tag';
+		$command = 'cd ' . $path . ' && git fetch --all && git tag';
 		exec($command, $tags, $code);
 		exec('cd ' . $path . ' && git checkout master && git pull origin master --tags');
 		$schemas = array(
