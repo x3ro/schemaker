@@ -4,8 +4,10 @@
 	<a href="{v:page.absoluteUrl()}#description"><i class="fa fa-file-text"></i> Description</a>&nbsp;
 	<a href="{v:page.absoluteUrl()}#arguments"><i class="fa fa-list-ul "></i> Arguments</a>&nbsp;
 	<a href="{v:page.absoluteUrl()}#history"><i class="fa fa-history"></i> History</a>&nbsp;
-	<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
-	<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
+	<f:if condition="{markdownBlacklisted} == 0">
+		<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
+		<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
+	</f:if>
 </div>
 <div class="clearfix"></div>
 <h2>
