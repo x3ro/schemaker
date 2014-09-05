@@ -160,7 +160,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * @return string XML Schema definition
 	 * @throws Exception
 	 */
-	public function generateXsd($extensionKey, $xsdNamespace, $namespaceAlias = NULL) {
+	public function generateXsd($extensionKey, $xsdNamespace) {
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
 			throw new Exception(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
