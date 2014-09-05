@@ -95,10 +95,10 @@ jQuery(document).ready(function($) {
 			tree.addClass('open');
 		};
 		toggle.find('.folder-icon').addClass('glyphicon-folder-open').removeClass('glyphicon-folder');
-		var parentGroups = element.parents('.viewhelper-group:first').not('.root');
+		var parentGroups = element.parents('.viewhelper-group').not('.root');
 		if (0 < parentGroups.length) {
 			expandGroup(parentGroups.first());
 		};
-		element.addClass('open');
+		element.addClass('open').show();
 	};
 });

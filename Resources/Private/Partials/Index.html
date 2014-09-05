@@ -1,7 +1,7 @@
-{namespace v=Tx_Vhs_ViewHelpers}
-<v:if.type.isArray value="{tree}">
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
+<v:condition.type.isArray value="{tree}">
 	<f:then>
-		{arguments -> f:count() -> v:math.subtract(b: 1) -> v:var.set(name: 'index')}
+		{arguments -> f:count() -> v:math.subtract(b: 1) -> v:variable.set(name: 'index')}
 		<div class="viewhelper-group{f:if(condition: sub, else: ' root')}">
 			<f:if condition="{sub}">
 				<ul class="nav nav-pills nav-stacked viewhelper-group-toggle">
@@ -12,7 +12,7 @@
 			</f:if>
 			<ul class="nav nav-pills nav-stacked viewhelper-group-tree">
 				<f:for each="{tree}" as="branch" key="folder">
-					{folder -> v:var.set(name: 'arguments.p{index}')}
+					{folder -> v:variable.set(name: 'arguments.p{index}')}
 					<li>
 						<f:render partial="Index" arguments="{tree: branch, extensionKey: extensionKey, version: version, arguments: arguments, key: folder, sub: 1}" />
 					</li>
@@ -21,9 +21,9 @@
 		</div>
 	</f:then>
 	<f:else>
-		{arguments -> f:count() -> v:math.subtract(b: 2) -> v:var.set(name: 'index')}
-		{tree -> v:var.set(name: 'arguments.p{index}')}
-		{tree -> v:format.substring(length: '-10') -> v:var.set(name: 'text')}
+		{arguments -> f:count() -> v:math.subtract(b: 2) -> v:variable.set(name: 'index')}
+		{tree -> v:variable.set(name: 'arguments.p{index}')}
+		{tree -> v:format.substring(length: '-10') -> v:variable.set(name: 'text')}
 		<f:render partial="Link" arguments="{arguments: arguments, text: text, icon: '0'}" />
 	</f:else>
-</v:if.type.isArray>
+</v:condition.type.isArray>

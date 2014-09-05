@@ -230,7 +230,6 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$document->validateOnParse = TRUE;
 		$document->strictErrorChecking = TRUE;
 		$document->loadXML($schemaSource);
-		$document->validate();
 		if (TRUE === $this->cache->has($baseCacheKey . 'tree')) {
 			$tree = $this->cache->get($baseCacheKey . 'tree');
 		} else {

@@ -160,13 +160,13 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 * @return string XML Schema definition
 	 * @throws Exception
 	 */
-	public function generateXsd($extensionKey, $xsdNamespace, $namespaceAlias = NULL) {
+	public function generateXsd($extensionKey, $xsdNamespace) {
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
 			throw new Exception(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
 		}
 		$xmlRootNode = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
+			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:php="http://www.php.net/" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
 		foreach ($classNames as $className) {
 			$this->generateXmlForClassName($className, $xmlRootNode);
 		}
@@ -265,6 +265,7 @@ class Tx_Schemaker_Service_SchemaService implements t3lib_Singleton {
 	 */
 	protected function addDocumentation($documentation, SimpleXMLElement $xsdParentNode) {
 		$documentation = preg_replace('/[^(\x00-\x7F)]*/', '', $documentation);
+		$documentation = preg_replace('/(^\ |$)/m', '', $documentation);
 		$xsdAnnotation = $xsdParentNode->addChild('xsd:annotation');
 		$this->addChildWithCData($xsdAnnotation, 'xsd:documentation', $documentation);
 	}

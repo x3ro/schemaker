@@ -89,28 +89,14 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 	 * @return void
 	 */
 	public function scheduledCommand($extensionKey = NULL, $spool = 'typo3temp/schemaker-spool.json', $outputDir = 'fileadmin/', $gitMode = FALSE) {
-		if (FALSE === (boolean) $gitMode) {
-			$outputFile = t3lib_div::getFileAbsFileName($outputDir . $extensionKey . '.xsd');
-			$schema = $this->generate($extensionKey);
-			t3lib_div::writeFile($outputFile, $schema);
-		} else {
-			$spool = t3lib_div::getFileAbsFileName($spool);
-			if (FALSE === file_exists($spool) && NULL !== $extensionKey) {
-				$schemas = $this->generateWithGit($extensionKey);
-				$this->writeSchemas($outputDir . $extensionKey, $schemas);
-			} else {
-				$spoolData = json_decode(file_get_contents($spool));
-				if (NULL !== $extensionKey) {
-					if (TRUE === $spoolData->$extensionKey) {
-						$schemas = $this->generateWithGit($extensionKey);
-						$this->writeSchemas($outputDir . $extensionKey, $schemas);
-					}
-				} else {
-					foreach ($spoolData as $spooledExtensionKey => $unused) {
-						$schemas = $this->generateWithGit($spooledExtensionKey);
-						$this->writeSchemas($outputDir . $spooledExtensionKey, $schemas);
-					}
-				}
+		$spool = t3lib_div::getFileAbsFileName($spool);
+		if (FALSE === empty($extensionKey)) {
+			$this->generateAndWriteWithOrWithoutGit($extensionKey, $outputDir, $gitMode);
+		}
+		if (TRUE === file_exists($spool)) {
+			$spoolData = json_decode(file_get_contents($spool), JSON_OBJECT_AS_ARRAY);
+			foreach ($spoolData as $spooledExtensionKey => $unused) {
+				$this->generateAndWriteWithOrWithoutGit($spooledExtensionKey, $outputDir, $gitMode);
 			}
 			unlink($spool);
 		}
@@ -132,6 +118,27 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 	}
 
 	/**
+	 * Wrapper function for generating and writing schemas by extension key, with the
+	 * generating behavior governed by the $gitMode flag.
+	 *
+	 * @param string $extensionKey
+	 * @param string $outputDir
+	 * @param boolean $gitMode
+	 * @return void
+	 */
+	protected function generateAndWriteWithOrWithoutGit($extensionKey, $outputDir, $gitMode) {
+		// extension key is provided: generate using current state or rolling git checkouts as requested by $gitMode
+		if (TRUE === $gitMode) {
+			$schemas = $this->generateWithGit($extensionKey);
+		} else {
+			$schemas = array(
+				$extensionKey => $this->generate($extensionKey)
+			);
+		}
+		$this->writeSchemas($outputDir . $extensionKey, $schemas);
+	}
+
+	/**
 	 * @param string $extensionKey
 	 * @return array
 	 */
@@ -139,14 +146,14 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 		$tags = array();
 		$code = 0;
 		$path = t3lib_extMgm::extPath($extensionKey);
-		$command = 'cd ' . $path . ' && git tag';
+		$command = 'cd ' . $path . ' && git fetch --all && git tag';
 		exec($command, $tags, $code);
-		exec('cd ' . $path . ' && git checkout master && git pull origin master --tags');
+		exec('cd ' . $path . ' && git checkout master && git reset --hard && git clean -qfdx && git pull origin master --tags');
 		$schemas = array(
 			'master' => $this->generate($extensionKey)
 		);
 		exec($command, $tags, $code);
-		exec('cd ' . $path . ' && git checkout development && git pull origin development --tags');
+		exec('cd ' . $path . ' && git checkout development && git reset --hard && git clean -qfdx && git pull origin development --tags');
 		$schemas['development'] = $this->generate($extensionKey);
 		$output = array();
 		foreach ($tags as $tag) {
