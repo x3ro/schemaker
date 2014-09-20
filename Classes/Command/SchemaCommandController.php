@@ -1,4 +1,5 @@
 <?php
+namespace FluidTYPO3\Schemaker\Command;
 /***************************************************************
  *  Copyright notice
  *
@@ -23,24 +24,27 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use FluidTYPO3\Schemaker\Service\SchemaService;
+use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+
 /**
  * Command controller for Fluid documentation rendering
  *
  * @package Schemaker
  * @subpackage Command
  */
-class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Controller_CommandController {
+class SchemaCommandController extends CommandController {
 
 	/**
-	 * @var Tx_Schemaker_Service_SchemaService
+	 * @var SchemaService
 	 */
 	protected $schemaService;
 
 	/**
-	 * @param Tx_Schemaker_Service_Schema $schemaService
+	 * @param SchemaService $schemaService
 	 * @return void
 	 */
-	public function injectSchemaService(Tx_Schemaker_Service_SchemaService $schemaService) {
+	public function injectSchemaService(SchemaService $schemaService) {
 		$this->schemaService = $schemaService;
 	}
 
@@ -61,7 +65,7 @@ class Tx_Schemaker_Command_SchemaCommandController extends Tx_Extbase_MVC_Contro
 		try {
 			$schema = $this->generate($extensionKey, $xsdNamespace);
 			$this->output($schema);
-		} catch (Exception $exception) {
+		} catch (\Exception $exception) {
 			$this->outputLine('An error occured while trying to generate the XSD schema for "' . $extensionKey . '":');
 			$this->outputLine('%s', array($exception->getMessage()));
 			$this->quit(1);
