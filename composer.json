@@ -2,5 +2,10 @@
 	"name": "fluidtypo3/schemaker",
 	"description": "The schemaker package from FluidTYPO3",
 	"type": "typo3-cms-extension",
-	"version": "3.0.0"
+	"version": "3.0.0",
+	"autoload": {
+		"psr-4": {
+			"FluidTYPO3\\Schemaker\\": "Classes/"
+		}
+	}
 }
