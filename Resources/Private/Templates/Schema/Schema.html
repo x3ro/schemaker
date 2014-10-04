@@ -1,459 +1,67 @@
-<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
-      xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
-      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
-{namespace v=Tx_Vhs_ViewHelpers}
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
 
-<style type="text/css">
-	<f:escape>
-	.viewhelper-group-tree {
-		display: none;
-	}
-	</f:escape>
-</style>
+<v:asset.style name="schemaker" path="{f:uri.resource(path: 'Stylesheet/Application.css')}" />
+<v:asset.script name="schemakerScript" dependencies="jquery" path="{f:uri.resource(path: 'Javascript/Application.js')}" />
+<input type="hidden" id="viewing-classname" value="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}" />
 
-<div class="row-fluid">
-	<div class="span3 well well-small">
-		<div class="form-search">
-			<input id="viewhelper-filter" type="text" class="search-query" placeholder="Filter ViewHelpers" tabindex="1" />
+<div class="row">
+	<div class="col-md-3 form-group">
+		<div class="form-selectors">
+			<fieldset>
+				<f:render section="Extensions" arguments="{_all}" />
+				<f:render section="Versions" arguments="{_all}" />
+			</fieldset>
 		</div>
-		<f:render section="Index" arguments="{_all}" />
-	</div>
-	<div class="span9">
-		<f:render section="BreadCrumb" arguments="{_all}" />
-		<f:if condition="{problem}">
-			<f:then>
-				<div class="alert alert-warning">
-					<h2 class="alert-header">
-						There was a problem loading the class
-					</h2>
-					<p>
-						The class {className} could not be loaded - there is a multitude of possible reasons, but no way to automatically resolve it.
-						Please review the class file and make the necessary fixes to allow class loading.
-					</p>
+		<p>
+			<a class="btn btn-block btn-large btn-primary" href="{schemaFile}"><i class="icon icon-download-alt"></i> XSD schema file <span class="muted">| {extensionKey} <em>{version}</em></span></a>
+		</p>
+				<div class="form-selectors">
+					<fieldset>
+						<input id="viewhelper-filter" type="text" class="form-control" placeholder="Filter ViewHelpers" tabindex="1" />
+					</fieldset>
 				</div>
-			</f:then>
-			<f:else>
-				<f:if condition="{isFile}">
-					<f:then>
-						<f:render section="Class" arguments="{_all}" />
-					</f:then>
-					<f:else>
-						<f:render section="Overview" arguments="{_all}" />
-					</f:else>
-				</f:if>
-			</f:else>
-		</f:if>
+				<f:render partial="Index" arguments="{tree: tree, extensionKey: extensionKey, version: version, arguments: {extensionKey: extensionKey, version: version}}" />
 	</div>
-</div>
-
-<f:section name="Overview">
-	<div class="page-header">
-		<h2>ViewHelper Reference for extension <em>{extensionKey}</em></h2>
-	</div>
-	<div class="extension-statistics">
-		<ul class="thumbnails">
-			<f:for each="{counters}" as="item" iteration="iteration">
-				<li class="thumbnail">
-					<h1>{item.counter}</h1>
-					<p>
-						{item.text}
-					</p>
-				</li>
-			</f:for>
-		</ul>
-	</div>
-	<h3>Resources <small>Schemas for extension <code>{extensionKey}</code></small></h3>
-	<div class="row-fluid">
-		<div class="span8">
-			<p>
-				<f:link.action class="btn btn-block btn-large btn-primary" controller="Schema" arguments="{p1: 'download-xsd'}">Download XSD Schema</f:link.action>
-			</p>
-		</div>
-		<div class="span4">
-			<p>
-				<f:link.action class="btn btn-block btn-large" controller="Schema" arguments="{p1: 'view-xsd'}">View XSD Schema</f:link.action>
-			</p>
-		</div>
-	</div>
-	<h3>XSD Usage examples</h3>
-	<div class="row-fluid">
-		<div class="span6">
-			<h4>Using the <code>&lt;html&gt;</code> tag</h4>
-			<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
-<?xml version="1.0" encoding="UTF-8" ?>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-      xmlns:{namespaceName}="$NAMESPACEURL"
-      f:schemaLocation="$NAMESPACEURL {f:uri.action(arguments: {p1: 'view-xsd'}, absolute: 1)}">
-<head>
-	<title>Partials: MyPartial</title>
-</head>
-<body>
-    <<f:escape>f:section name="Main"</f:escape>>
-	    <!-- Fluid goes here -->
-    <<f:escape>/f:section</f:escape>>
-</body>
-</html></f:format.htmlentities></pre>
-		</div>
-		<div class="span6">
-			<h4>Using a <code>&lt;div&gt;</code> or other standard tag</h4>
-			<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {namespaceName}=Tx_{extensionName}_ViewHelpers}
-<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
-     xmlns:f="$NAMESPACEURL"
-     f:schemaLocation="$NAMESPACEURL {f:uri.action(arguments: {p1: 'view-xsd'}, absolute: 1)}">
-	<!-- Fluid goes here, no sections necessary -->
-</div></f:format.htmlentities></pre>
-			<div class="alert alert-info">
-				<ul>
-					<li>
-						Download the XSD file and place it locally - or use the URL as value of <code>{namespaceName}:schemaLocation</code>
-					</li>
-					<li>
-						Add an <code>xmlns:{namespaceName}</code> attribute and assign a unique namespace URL. If at all possible, use the official URLs
-					</li>
-					<li>
-						If you don't use a <code>schemaLocation</code>, make sure the URL you use when mapping the XSD file to the URL is exactly the same as in the templates
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</f:section>
-
-<f:section name="Index">
-	<div class="viewhelper-group">
-		<h4 class="viewhelper-group-toggle">
-			<i class="icon icon-folder-open folder-icon"></i>
-			<f:if condition="{tree.arguments}">
-				<f:then>
-					{tree.segments -> v:iterator.implode(glue: ' / ')}
-				</f:then>
-				<f:else>
-					/
-				</f:else>
-			</f:if>
-		</h4>
-		<ul class="nav nav-list nav-stacked viewhelper-group-tree">
-			<f:if condition="{tree.classes}">
-				<f:for each="{tree.classes}" key="class" as="classLinkArguments">
-					<li>
-						<f:render section="Link" arguments="{icon: 'file', text: '{class}', dataClass: '{v:iterator.merge(a: {0: \'Tx\', 1: extensionName, 2: \'ViewHelpers\'}, b: classLinkArguments) -> v:iterator.values() -> v:iterator.implode(glue: \'_\')}', arguments: classLinkArguments, currentArguments: arguments}" />
-					</li>
-				</f:for>
-			</f:if>
-		</ul>
-	</div>
-	<f:for each="{tree.branches}" as="branch" key="folder">
-		<f:render section="Index" arguments="{tree: branch, segments: '{v:iterator.merge(a: segments, b: folder)}', arguments: arguments, extensionName: extensionName}" />
-	</f:for>
-</f:section>
-
-<f:section name="BreadCrumb">
-	<ul class="breadcrumb">
-		<li class="muted">
-			<f:link.page>{extensionKey}</f:link.page>
-			<f:if condition="{segments}">
-				<span class="divider">/</span>
-			</f:if>
-		</li>
-		<f:for each="{segments}" as="segment" iteration="iteration">
-			<li>
-				<span>{segment}</span>
-				<f:if condition="{iteration.isLast}">
-					<f:else>
-						<span class="divider">/</span>
-					</f:else>
-				</f:if>
-			</li>
-		</f:for>
-	</ul>
-</f:section>
-
-<f:section name="Class">
-	<input type="hidden" id="viewing-classname" value="{className -> v:format.url.sanitizeString()}" />
-	<div class="badge badge-info pull-right lead">
-		<h4>{f:if(condition: ajaxWidget, then: 'AJAX ')}{viewHelperType}</h4>
-	</div>
-	<h2><i class="icon icon-chevron-left"></i> {name} <i class="icon icon-chevron-right"></i></h2>
-	<f:if condition="{displayHeadsUp}">
-		<div class="alert alert-warning">
-			<h3 class="alert-heading">Heads up! <small>This ViewHelper has advanced features</small></h3>
-			<ul>
-				<v:switch value="{viewHelperType}">
-					<v:case case="Tag Based" break="TRUE">
-						<li>
-							This ViewHelper is a Tag Based ViewHelper. This means that it most likely does not support inline usage
-							very well. The ViewHelper outputs a single, complete HTML tag with attributes.
-						</li>
-					</v:case>
-					<v:case case="Condition" break="TRUE">
-						<li>
-							This ViewHelper is a Condition ViewHelper, which means it supports the <code>then</code> and
-							<code>else</code> arguments as 	well as the use of <code>f:then</code> and <code>f:else</code>
-							child ViewHelpers.
-						</li>
-					</v:case>
-					<v:case case="Widget" break="TRUE">
-						<f:if condition="{ajaxWidgetSingleton}">
-							<li>
-								This ViewHelper is a Widget but does <strong>not</strong> subclass the AbstractWidgetViewHelper from
-								EXT:fluidwidget. This has the implication that using multiple instances of the Widget may not work as
-								intended when dispatching the AJAX calls.
-							</li>
-						</f:if>
-					</v:case>
-				</v:switch>
-			</ul>
-		</div>
-	</f:if>
-	<f:if condition="{markdownBlacklisted}">
-		<f:then>
-			{docComment
-			-> v:format.replace(substring: '<code', replacement: '<pre class="prettyprint linenums:1"')
-			-> v:format.replace(substring: '</code>', replacement: '</pre>')
-			-> v:format.replace(substring: '<output>', replacement: '<pre class="prettyprint linenums:1">')
-			-> v:format.replace(substring: '</output>', replacement: '</pre>')
-			-> f:format.html() -> v:format.tidy()}
-		</f:then>
-		<f:else>
-			{docComment
-			-> v:format.markdown()
-			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint linenums:1">') -> v:format.tidy()}
-		</f:else>
-	</f:if>
-	<h3>Usage</h3>
-	<pre class="prettyprint lang-html linenums:1">
-<f:format.htmlentities><f:escape>{</f:escape>namespace {ns}=Tx_{extensionName}_ViewHelpers<f:escape>}</f:escape></f:format.htmlentities>
-
-<f:format.htmlentities><!-- Tag-based usage --></f:format.htmlentities>
-{tagExample}
-
-<f:format.htmlentities><!-- Tag-based usage, required arguments only --></f:format.htmlentities>
-{tagExampleRequired}
-
-<f:format.htmlentities><!-- Tag-based usage, self-closing w/o tag content usage, required arguments only --></f:format.htmlentities>
-{tagExampleSelfClosingRequired}
-<f:if condition="{tagBased} < 1">
-<f:format.htmlentities><!-- Inline usage --></f:format.htmlentities>
-{inlineExample}
-<f:format.htmlentities><!-- Inline usage , required arguments only--></f:format.htmlentities>
-{inlineExampleRequired}
-</f:if></pre>
-	<h2>Attributes</h2>
-	<ul class="unstyled">
-		<li>
-			<i class="icon icon-asterisk"></i> Required attribute
-		</li>
-		<li>
-			<i class="icon icon-arrow-right"></i> Attribute is also method argument
-		</li>
-	</ul>
-	<table class="table table-hover table-bordered">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th class="argument-type">Type</th>
-				<th class="argument-default-value">Default&nbsp;value</th>
-			</tr>
-		</thead>
-		<tbody>
-			<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
-				<tr>
-					<td>
-						<h4>
-							<f:if condition="{argument.required}"><i class="icon icon-asterisk"></i></f:if>
-							<f:if condition="{argument.isMethodParameter}"><i class="icon icon-arrow-right"></i></f:if>
-							{argument.name}
-						</h4>
-						<em>
-							{argument.description}
-						</em>
-					</td>
-					<td>{argument.type}</td>
-					<td>{argument.defaultValue -> f:format.raw() -> f:debug(inline: 1, plainText: 1, title: '')}</td>
-				</tr>
-			</f:for>
-		</tbody>
-	</table>
-</f:section>
-
-<f:section name="Link">
-	<f:link.action action="schema" arguments="{arguments}" id="{text -> v:format.url.sanitizeString()}" name="{dataClass -> v:format.url.sanitizeString()}">
-		<f:if condition="{icon}">
+	<div class="col-md-9">
+		<f:if condition="{isFile}">
 			<f:then>
-				<i class="icon icon-{icon}"></i> {text}
+				<f:render partial="Class" arguments="{_all}" />
 			</f:then>
 			<f:else>
-				{text}
+				<f:render partial="Overview" arguments="{_all}" />
 			</f:else>
 		</f:if>
-	</f:link.action>
+	</div>
+</div>
+
+<f:section name="Extensions">
+	<f:if condition="0 < {extensionKeys -> f:count()}">
+		<select id="extensionSelector" tabindex="2" class="form-control">
+			<f:for each="{extensionKeys}" as="selectableExtensionKey">
+				<option data-url="{f:uri.action(arguments: '{extensionKey: selectableExtensionKey, version: \'master\'}')}"
+					{f:if(condition: '{selectableExtensionKey} == {extensionKey}', then: ' selected="selected"')}>{selectableExtensionKey}</option>
+			</f:for>
+		</select>
+		<noscript>
+			<f:for each="{extensionKeys}" as="selectableExtensionKey">
+				<f:link.action arguments="{extensionKey: selectableExtensionKey, version: 'master'}">{selectableExtensionKey}</f:link.action>
+			</f:for>
+		</noscript>
+	</f:if>
 </f:section>
 
-
-<style type="text/css">
-	<f:escape>
-	pre.prettyprint ol.linenums {
-		margin: 0px 0px 0px 40px;
-	}
-	pre.prettyprint ol.linenums li {
-		margin-bottom: 4px;
-		font-size: 12px;
-	}
-	.argument-type, .argument-default-value {
-		width: 20%;
-	}
-	.extension-statistics .thumbnail {
-		width:  100px;
-		margin-left: 0px;
-		margin-right: 2em;
-	}
-	.extension-statistics p {
-		text-align: center;
-		display: block;
-	}
-	.extension-statistics h1 {
-		font-size:  50px;
-		line-height: 40px;
-		color:  #555555;
-		text-align: center;
-		margin-bottom: 8px;
-	}
-	.viewhelper-group-toggle {
-		cursor: pointer;
-		margin-bottom: 0px;
-	}
-	.viewhelper-group-toggle:hover {
-		color: #005580;
-	}
-	#viewhelper-filter {
-		display: block;
-		margin-right: 0px;
-		width:  90%;
-		padding: 5px 5% 5px 5%;
-	}
-	</f:escape>
-</style>
-
-<script type="text/javascript">
-	<f:format.raw>
-	$(document).ready(function($) {
-		var viewingClass = $('#viewing-classname').val();
-		var activeLink = $(this);
-		var touched = false;
-		$('.extension-statistics h1').each(function() {
-			var number = $(this);
-			var value = parseInt(number.text());
-			number.html(0);
-			number.ficticious = 0;
-			number.animate({'ficticious': value}, {
-				'step': function(now) {
-					number.html(Math.floor(now).toString());
-				},
-				'easing': 'linear',
-				'duration': 250
-			});
-		});
-		$('#viewhelper-filter').keyup(function() {
-			var q = $(this).val();
-			if (typeof q == 'string') {
-				if (q.length == 0 && touched) {
-					$('.viewhelper-group-tree').hide();
-					$('.viewhelper-group').show();
-					$('.viewhelper-group a').each(function() {
-						if ($(this).name == activeLink.name) {
-							expandGroup($(this).parents('.viewhelper-group:first').find('.viewhelper-group-toggle'), $(this).parents('.viewhelper-group:first').find('.viewhelper-group-tree'), 0);
-						};
-						$(this).parents('li:first').show();
-					});
-					$('.viewhelper-group').each(function() {
-						var toggle = $(this).find('.viewhelper-group-toggle');
-						var tree = $(this).find('.viewhelper-group-tree');
-						if ($(this).find('li.active').length == 0) {
-							collapseGroup(toggle, tree, 0);
-						};
-					});
-				} else if (q.length >= 1) {
-					touched = true
-					$('.viewhelper-group').each(function() {
-						var group = $(this);
-						var toggle = group.find('.viewhelper-group-toggle');
-						var groupTree = group.find('.viewhelper-group-tree');
-						groupTree.find('a').each(function() {
-							var link = $(this);
-							if (link.attr('name').indexOf(q) >= 0) {
-								expandGroup(toggle, groupTree, 0);
-								link.parents('li:first').show();
-							} else {
-								link.parents('li:first').hide();
-							};
-						});
-						if (group.find('li:visible').length == 0) {
-							collapseGroup(toggle, groupTree, 0);
-							group.hide();
-						};
-					});
-				};
-			};
-		}).blur(function() {
-			if ($(this).val().length < 1) {
-				touched = false;
-			};
-		}).tooltip({
-			'title': 'Tip: Use TAB for quick access',
-			'trigger': 'hover'
-		});
-		$('.viewhelper-group').each(function() {
-			var element = $(this);
-			var tree = element.find('.viewhelper-group-tree');
-			tree.hide();
-			element.find('.folder-icon').removeClass('icon-folder-open').addClass('icon-folder-close');
-			element.find('.viewhelper-group-toggle').click(function() {
-				var toggle = $(this);
-				if (tree.hasClass('open')) {
-					collapseGroup(element, tree);
-				<f:escape>} else {</f:escape>
-					expandGroup(element, tree);
-				<f:escape>}</f:escape>;
-				<f:escape>}</f:escape>);
-		});
-		$('.viewhelper-group-tree a').each(function() {
-			var link = $(this);
-			var parent = link.parents('.viewhelper-group:first');
-			if (link.attr('name') == viewingClass) {
-				activeLink = link;
-				link.parents('li:first').addClass('active');
-				expandGroup(parent.find('.viewhelper-group-toggle'), parent.find('.viewhelper-group-tree'), 1);
-			<f:escape>}</f:escape>;
-			<f:escape>}</f:escape>);
-		function collapseGroup(toggle, tree, speed) {
-			if (typeof speed == 'undefined') {
-				speed = 250;
-			};
-			toggle.animate({'color': '#333'}, speed);
-			toggle.find('.folder-icon').addClass('icon-folder-close').removeClass('icon-folder-open');
-			tree.slideUp(speed, function() {
-				tree.removeClass('open');
-				<f:escape>}</f:escape>);
-		};
-		function expandGroup(toggle, tree, speed) {
-			if (typeof speed == 'undefined') {
-				speed = 250;
-			};
-			toggle.find('.folder-icon').addClass('icon-folder-open').removeClass('icon-folder-close');
-			if (speed > 0) {
-				toggle.animate({'color': '#08C'}, speed);
-				tree.slideDown(speed, function() {
-					tree.addClass('open');
-					<f:escape>}</f:escape>);
-			} else {
-				toggle.css({'color': '#08C'});
-				tree.show();
-			};
-		};
-	});
-	</f:format.raw>
-</script>
-
-</div>
+<f:section name="Versions">
+	<f:if condition="0 < {versions -> f:count()}">
+		<select id="versionSelector" tabindex="3" class="form-control">
+			<f:for each="{versions}" as="selectableVersion">
+				<option data-url="{f:uri.action(arguments: '{extensionKey: extensionKey, version: selectableVersion}')}"
+					{f:if(condition: '{selectableVersion} == {version}', then: ' selected="selected"')}>{selectableVersion}</option>
+			</f:for>
+		</select>
+		<noscript>
+			<f:for each="{versions}" as="selectableVersion">
+				<f:link.action arguments="{extensionKey: extensionKey, version: selectableVersion}">{selectableVersion}</f:link.action>
+			</f:for>
+		</noscript>
+	</f:if>
+</f:section>

@@ -1,0 +1,13 @@
+plugin.tx_schemaker {
+	settings {
+		extensionKey = fluid
+		extensionKeys = fluid
+		xsdStoragePath = fileadmin/schemas/
+		githubPath = https://github.com/FluidTYPO3/%1$s/blob/%2$s/Classes/ViewHelpers/%3$s.php
+	}
+	view {
+		templateRootPath = EXT:schemaker/Resources/Private/Templates/
+		partialRootPath = EXT:schemaker/Resources/Private/Partials/
+		layoutRootPath = EXT:schemaker/Resources/Private/Layouts/
+	}
+}

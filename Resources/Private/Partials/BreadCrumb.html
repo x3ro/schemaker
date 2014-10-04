@@ -1,0 +1,19 @@
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
+<ul class="breadcrumb">
+	<li class="muted">
+		<f:link.page>{extensionKey}</f:link.page>
+		<f:if condition="{segments}">
+			<span class="divider">/</span>
+		</f:if>
+	</li>
+	<f:for each="{segments}" as="segment" iteration="iteration">
+		<li>
+			<span>{segment}</span>
+			<f:if condition="{iteration.isLast}">
+				<f:else>
+					<span class="divider">/</span>
+				</f:else>
+			</f:if>
+		</li>
+	</f:for>
+</ul>

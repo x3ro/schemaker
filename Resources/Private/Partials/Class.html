@@ -1,0 +1,84 @@
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
+
+<div class="pull-right">Jump to:&nbsp;
+	<a href="{v:page.absoluteUrl()}#description"><i class="fa fa-file-text"></i> Description</a>&nbsp;
+	<a href="{v:page.absoluteUrl()}#arguments"><i class="fa fa-list-ul "></i> Arguments</a>&nbsp;
+	<a href="{v:page.absoluteUrl()}#history"><i class="fa fa-history"></i> History</a>&nbsp;
+	<f:if condition="{markdownBlacklisted} == 0">
+		<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
+		<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
+	</f:if>
+</div>
+<div class="clearfix"></div>
+<h2>
+	{arguments -> v:iterator.slice(start: 2) -> v:iterator.implode(glue: ' / ')}
+</h2>
+
+<a name="description"></a>
+<f:if condition="{docComment -> v:format.trim()}">
+	<f:if condition="{markdownBlacklisted}">
+		<f:then>
+			{docComment
+			-> v:format.regularExpression(pattern: '/<(\/?)f\:(.*)>/Us', replacement: '&lt;$1f:$2&gt;')
+			-> v:format.regularExpression(pattern: '/^[=\ ]{1,}(\w+)[=\ ]{1,}$/m', replacement: '<h3>$1</h3>')
+			-> v:format.regularExpression(pattern: '/<code\ title="(.*)">(.*)<\/code>/Us', replacement: '<h4>$1</h4><pre class="prettyprint lang-xml">$2</pre>')
+			-> v:format.regularExpression(pattern: '/<output>(.*)<\/output>/Us', replacement: '<h4>Output</h4><pre class="prettyprint lang-xml">$1</pre><br />')
+			-> v:format.regularExpression(pattern: '/\\n([a-zA-Z0-9\-\*]{1,})/Us', replacement: '<br />$1')
+			-> v:format.regularExpression(pattern: '/(lang\-xml\">)<br \/>/Us', replacement: '$1')
+			-> f:format.raw()}
+		</f:then>
+		<f:else>
+			{docComment
+			-> v:format.markdown()
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint lang-xml">')}
+		</f:else>
+	</f:if>
+</f:if>
+<ul class="list-unstyled examples">
+	<li>
+		<h4>Tag usage example</h4>
+		<pre class="prettyprint lang-xml">{tagExample}</pre>
+	</li>
+	<li>
+		<h4>Inline usage example</h4>
+		<pre class="prettyprint lang-xml">{inlineExample}</pre>
+	</li>
+</ul>
+<a name="arguments"></a>
+<h3>Arguments</h3>
+<table class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<th>Argument</th>
+			<th>Description</th>
+			<th class="argument-type">Type</th>
+		</tr>
+	</thead>
+	<tbody>
+	<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
+		<tr>
+			<td>
+				<a name="argument-{argument.name}"></a>
+				<f:if condition="{argument.required}"><i class="icon icon-asterisk"></i></f:if>
+				<f:if condition="{argument.isMethodParameter}"><i class="icon icon-arrow-right"></i></f:if>
+				{argument.name}
+			</td>
+			<td>
+				{argument.description -> v:format.markdown()}
+			</td>
+			<td>{argument.type}</td>
+		</tr>
+	</f:for>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<i class="icon icon-asterisk"></i> Required attribute
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<a name="history"></a>
+<h3>Revision history</h3>
+<pre>{history -> f:format.htmlentities()}</pre>
