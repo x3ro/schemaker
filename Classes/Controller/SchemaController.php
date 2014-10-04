@@ -1,4 +1,5 @@
 <?php
+namespace FluidTYPO3\Schemaker\Controller;
 /***************************************************************
  *  Copyright notice
  *
@@ -23,6 +24,14 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use FluidTYPO3\Schemaker\Service\SchemaService;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Fluid\Core\ViewHelper\ArgumentDefinition;
+
 /**
  * Schema Controller
  *
@@ -32,20 +41,20 @@
  * @subpackage Controller
  * @route NoMatch('bypass')
  */
-class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller_ActionController {
+class SchemaController extends ActionController {
 
 	/**
-	 * @var Tx_Schemaker_Service_SchemaService
+	 * @var SchemaService
 	 */
 	protected $schemaService;
 
 	/**
-	 * @var \TYPO3\CMS\Core\Cache\CacheManager
+	 * @var CacheManager
 	 */
 	protected $manager;
 
 	/**
-	 * @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend
+	 * @var VariableFrontend
 	 */
 	protected $cache;
 
@@ -60,18 +69,18 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	protected $markdownBlacklistedExtensionKeys = array('fluid', 'news');
 
 	/**
-	 * @param Tx_Schemaker_Service_SchemaService $schemaService
+	 * @param SchemaService $schemaService
 	 * @return void
 	 */
-	public function injectSchemaService(Tx_Schemaker_Service_SchemaService $schemaService) {
+	public function injectSchemaService(SchemaService $schemaService) {
 		$this->schemaService = $schemaService;
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Core\Cache\CacheManager $manager
+	 * @param CacheManager $manager
 	 * @return void
 	 */
-	public function injectCacheManager(\TYPO3\CMS\Core\Cache\CacheManager $manager) {
+	public function injectCacheManager(CacheManager $manager) {
 		$this->manager = $manager;
 	}
 
@@ -134,7 +143,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 
 		$arguments = $this->segmentsToArguments($extensionKey, $version, $segments);
-		$extensionName = t3lib_div::underscoredToLowerCamelCase($extensionKey);
+		$extensionName = GeneralUtility::underscoredToLowerCamelCase($extensionKey);
 		$extensionName = ucfirst($extensionName);
 		$extensionKeys = $this->getExtensionKeysSetting();
 		$versions = $this->getVersionsByExtensionKey($extensionKey);
@@ -151,18 +160,18 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		}
 
 		$className = implode('/', $segments);
-		if (TRUE === t3lib_extMgm::isLoaded($extensionKey)) {
-			$extensionPath = t3lib_extMgm::extPath($extensionKey);
+		if (TRUE === ExtensionManagementUtility::isLoaded($extensionKey)) {
+			$extensionPath = ExtensionManagementUtility::extPath($extensionKey);
 			if (FALSE === empty($className)) {
 				$relativeFilename = 'Classes/ViewHelpers/' . $className . '.php';
-				$historyCacheFile = t3lib_div::getFileAbsFileName('typo3temp/schemaker-git-log-' . str_replace('/', '-', $relativeFilename) . '.log');
+				$historyCacheFile = GeneralUtility::getFileAbsFileName('typo3temp/schemaker-git-log-' . str_replace('/', '-', $relativeFilename) . '.log');
 				if (TRUE === file_exists($historyCacheFile) && (time() - 21600) < filemtime($historyCacheFile)) {
 					$history = file_get_contents($historyCacheFile);
 				} else {
 					$command = 'cd ' . $extensionPath . ' && ' . $gitCommand . ' log --reverse ' . $relativeFilename;
 					$history = shell_exec($command);
 					$history = preg_replace('/(([a-z0-9\.^\s]+)@([a-z0-9\.^\s]+))/u', '*****@$3', $history);
-					t3lib_div::writeFile($historyCacheFile, $history);
+					GeneralUtility::writeFile($historyCacheFile, $history);
 				}
 			} else {
 				$readmeFile = $extensionPath . 'Classes/ViewHelpers/README.md';
@@ -211,7 +220,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @return array
 	 */
 	protected function getSchemaData($extensionKey, $version, $segments) {
-		if (FALSE === \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extensionKey)) {
+		if (FALSE === ExtensionManagementUtility::isLoaded($extensionKey)) {
 			return array();
 		}
 		$baseCacheKey = $extensionKey . $version;
@@ -226,7 +235,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 		$schemaFile = t3lib_div::getFileAbsFileName($schemaFile);
 		$schemaSource = shell_exec('cat ' . $schemaFile . ' | tr -cd \'[:print:]\r\n\t\'');
 
-		$document = new DOMDocument();
+		$document = new \DOMDocument();
 		$document->validateOnParse = TRUE;
 		$document->strictErrorChecking = TRUE;
 		$document->loadXML($schemaSource);
@@ -289,7 +298,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	 * @return string
 	 */
 	protected function getExtensionKeySetting() {
-		$fallback = (TRUE === \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($GLOBALS['TSFE']->page['title']) ? $GLOBALS['TSFE']->page['title'] : NULL);
+		$fallback = (TRUE === ExtensionManagementUtility::isLoaded($GLOBALS['TSFE']->page['title']) ? $GLOBALS['TSFE']->page['title'] : NULL);
 		return TRUE === isset($this->settings['extensionKey']) ? $this->settings['extensionKey'] : $fallback;
 	}
 
@@ -330,10 +339,10 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	}
 
 	/**
-	 * @param DOMDocument $document
+	 * @param \DOMDocument $document
 	 * @return array
 	 */
-	protected function buildTreeFromSchema(DOMDocument $document) {
+	protected function buildTreeFromSchema(\DOMDocument $document) {
 		$tree = array();
 		$nodes = $document->getElementsByTagName('element');
 		foreach ($nodes as $element) {
@@ -377,7 +386,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	/**
 	 * @param string $namespace
 	 * @param string $name
-	 * @param Tx_Fluid_Core_ViewHelper_ArgumentDefinition[] $arguments
+	 * @param ArgumentDefinition[] $arguments
 	 * @param boolean $onlyRequired
 	 * @param boolean $selfClosing
 	 * @return string
@@ -403,7 +412,7 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	/**
 	 * @param string $namespace
 	 * @param string $name
-	 * @param Tx_Fluid_Core_ViewHelper_ArgumentDefinition[] $arguments
+	 * @param ArgumentDefinition[] $arguments
 	 * @param boolean $onlyRequired
 	 * @return string
 	 */
@@ -426,11 +435,11 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	}
 
 	/**
-	 * @param DOMDocument $document
+	 * @param \DOMDocument $document
 	 * @param array $segments
 	 * @return DOMElement
 	 */
-	protected function findCurrentViewHelperNode(DOMDocument $document, $segments) {
+	protected function findCurrentViewHelperNode(\DOMDocument $document, $segments) {
 		$segments = array_map('lcfirst', $segments);
 		$name = substr(implode('.', $segments), 0, -10);
 		$elements = $document->getElementsByTagName('element');
@@ -443,15 +452,15 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 	}
 
 	/**
-	 * @param DOMElement $node
+	 * @param \DOMElement $node
 	 * @param string $extensionKey
 	 * @param string $className
-	 * @return Tx_Fluid_Core_ViewHelper_ArgumentDefinition[]
+	 * @return ArgumentDefinition[]
 	 */
-	protected function makeArgumentDefinitions(DOMElement $node, $extensionKey, $className) {
+	protected function makeArgumentDefinitions(\DOMElement $node, $extensionKey, $className) {
 		$arguments = $node->getElementsByTagName('attribute');
 		$definitions = array();
-		$url = t3lib_div::getIndpEnv('TYPO3_REQUEST_URL');
+		$url = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
 		foreach ($arguments as $attribute) {
 			$complexType = 'xsd:complexType' === $attribute->parentNode->tagName ? $attribute->parentNode : NULL;
 			$name = $attribute->getAttribute('name');
@@ -469,18 +478,18 @@ class Tx_Schemaker_Controller_SchemaController extends Tx_Extbase_MVC_Controller
 				$description .= LF . LF . $additionalDocumentation;
 			}
 			$required = (boolean) ($complexType->getElementsByTagName('any')->item(0)->getAttribute('minOccurs') || 'required' === $attribute->getAttribute('use'));
-			$definition = new Tx_Fluid_Core_ViewHelper_ArgumentDefinition($name, $type, $description, $required, $default);
+			$definition = new ArgumentDefinition($name, $type, $description, $required, $default);
 			$definitions[$name] = $definition;
 		}
 		return $definitions;
 	}
 
 	/**
-	 * @param Tx_Fluid_Core_ViewHelper_ArgumentDefinition $argument
+	 * @param ArgumentDefinition $argument
 	 * @param boolean $quoteStrings
 	 * @return string
 	 */
-	protected function buildArgumentTypeDummyRepresentation(Tx_Fluid_Core_ViewHelper_ArgumentDefinition $argument, $quoteStrings = TRUE) {
+	protected function buildArgumentTypeDummyRepresentation(ArgumentDefinition $argument, $quoteStrings = TRUE) {
 		switch ($argument->getType()) {
 			case 'string': $representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'"); break;
 			case 'array': $representation = "{foo: 'bar'}"; break;
