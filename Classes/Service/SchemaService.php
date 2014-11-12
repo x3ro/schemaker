@@ -291,7 +291,7 @@ class SchemaService implements SingletonInterface {
 	 * @param string $combinedExtensionKey
 	 * @param string $filename
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
 		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
