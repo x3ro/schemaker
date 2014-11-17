@@ -3,7 +3,7 @@ namespace FluidTYPO3\Schemaker\Service;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2010 Claus Due <claus@wildside.dk>, Wildside A/S
+ *  (c) 2014 Claus Due <claus@namelesscoder.net>
  *
  *  All rights reserved
  *
@@ -291,7 +291,7 @@ class SchemaService implements SingletonInterface {
 	 * @param string $combinedExtensionKey
 	 * @param string $filename
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
 		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);
