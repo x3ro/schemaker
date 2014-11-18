@@ -25,6 +25,8 @@ namespace FluidTYPO3\Schemaker\Command;
  ***************************************************************/
 
 use FluidTYPO3\Schemaker\Service\SchemaService;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
 /**
@@ -93,7 +95,7 @@ class SchemaCommandController extends CommandController {
 	 * @return void
 	 */
 	public function scheduledCommand($extensionKey = NULL, $spool = 'typo3temp/schemaker-spool.json', $outputDir = 'fileadmin/', $gitMode = FALSE) {
-		$spool = t3lib_div::getFileAbsFileName($spool);
+		$spool = GeneralUtility::getFileAbsFileName($spool);
 		if (FALSE === empty($extensionKey)) {
 			$this->generateAndWriteWithOrWithoutGit($extensionKey, $outputDir, $gitMode);
 		}
@@ -115,9 +117,9 @@ class SchemaCommandController extends CommandController {
 		foreach ($schemas as $name => $schema) {
 			$filename = $baseName . '-' . $name . '.xsd';
 			if (0 !== strpos($filename, '/')) {
-				$filename = t3lib_div::getFileAbsFileName($filename);
+				$filename = GeneralUtility::getFileAbsFileName($filename);
 			}
-			t3lib_div::writeFile($filename, $schema);
+			GeneralUtility::writeFile($filename, $schema);
 		}
 	}
 
@@ -149,7 +151,7 @@ class SchemaCommandController extends CommandController {
 	protected function generateWithGit($extensionKey) {
 		$tags = array();
 		$code = 0;
-		$path = t3lib_extMgm::extPath($extensionKey);
+		$path = ExtensionManagementUtility::extPath($extensionKey);
 		$command = 'cd ' . $path . ' && git fetch --all && git tag';
 		exec($command, $tags, $code);
 		exec('cd ' . $path . ' && git checkout master && git reset --hard && git clean -qfdx && git pull origin master --tags');

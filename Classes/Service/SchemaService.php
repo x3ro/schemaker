@@ -136,7 +136,8 @@ class SchemaService implements SingletonInterface {
 		$separator = FALSE !== strpos($className, '\\') ? '\\' : '_';
 		$className = substr($className, 0, -10);
 		$classNameParts = explode($separator, $className);
-		$classNameParts = array_slice($classNameParts, 3);
+		$startPosition = array_search('ViewHelpers', $classNameParts) + 1;
+		$classNameParts = array_slice($classNameParts, $startPosition);
 		$classNameParts = array_map('lcfirst', $classNameParts);
 		$tagName = implode('.', $classNameParts);
 		return $tagName;
@@ -291,7 +292,7 @@ class SchemaService implements SingletonInterface {
 	 * @param string $combinedExtensionKey
 	 * @param string $filename
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function getRealClassNameBasedOnExtensionAndFilenameAndExistence($combinedExtensionKey, $filename) {
 		list ($vendor, $extensionKey) = $this->getRealExtensionKeyAndVendorFromCombinedExtensionKey($combinedExtensionKey);

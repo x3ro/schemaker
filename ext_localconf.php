@@ -11,5 +11,5 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['schemaker']['setup'] = unserialize($_EXT
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'FluidTYPO3\\Schemaker\\Command\\SchemaCommandController';
 
 if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['schemaker']['setup']['frontend']) && $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['schemaker']['setup']['frontend'] > 0) {
-	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('FluidTYPO#.Schemaker', 'Schema', array('Schema' => 'schema'), array());
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin('FluidTYPO3.Schemaker', 'Schema', array('Schema' => 'schema'), array());
 }

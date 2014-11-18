@@ -116,7 +116,7 @@ class SchemaController extends ActionController {
 		}
 		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$schemaFile = $this->getXsdStoragePathSetting() . $extensionKey . '-' . $version . '.xsd';
-		$schemaFile = t3lib_div::getFileAbsFileName($schemaFile);
+		$schemaFile = GeneralUtility::getFileAbsFileName($schemaFile);
 		$schemaFileExists = file_exists($schemaFile);
 		$requestArguments = array(
 			'extensionKey' => $extensionKey,
@@ -134,7 +134,7 @@ class SchemaController extends ActionController {
 			$namespaceAlias = $this->extensionKeyToNamespaceMap[$extensionKey];
 		}
 
-		$relativeSchemaFile = substr($schemaFile, strlen(t3lib_div::getFileAbsFileName('.')) - 1);
+		$relativeSchemaFile = substr($schemaFile, strlen(GeneralUtility::getFileAbsFileName('.')) - 1);
 
 		$segments = array($p1, $p2, $p3, $p4, $p5);
 		$segments = $this->trimPathSegments($segments);
@@ -315,7 +315,7 @@ class SchemaController extends ActionController {
 	protected function getExtensionKeysSetting() {
 		$keys = TRUE === isset($this->settings['extensionKeys']) ? $this->settings['extensionKeys'] : $this->getExtensionKeySetting();
 		if (FALSE === is_array($keys)) {
-			$keys = t3lib_div::trimExplode(',', $keys);
+			$keys = GeneralUtility::trimExplode(',', $keys);
 		}
 		sort($keys);
 		return $keys;
@@ -327,7 +327,7 @@ class SchemaController extends ActionController {
 	 */
 	protected function getVersionsByExtensionKey($extensionKey) {
 		$path = $this->getXsdStoragePathSetting();
-		$pattern = t3lib_div::getFileAbsFileName($path) . $extensionKey . '-*.xsd';
+		$pattern = GeneralUtility::getFileAbsFileName($path) . $extensionKey . '-*.xsd';
 		$versions = array();
 		foreach (glob($pattern) as $file) {
 			$version = basename($file, '.xsd');
@@ -437,7 +437,7 @@ class SchemaController extends ActionController {
 	/**
 	 * @param \DOMDocument $document
 	 * @param array $segments
-	 * @return DOMElement
+	 * @return \DOMElement
 	 */
 	protected function findCurrentViewHelperNode(\DOMDocument $document, $segments) {
 		$segments = array_map('lcfirst', $segments);
@@ -470,7 +470,7 @@ class SchemaController extends ActionController {
 			}
 			$default = $attribute->getAttribute('default');
 			$description = $attribute->getElementsByTagName('documentation')->item(0)->nodeValue;
-			$additionalDocumentationFile = t3lib_extMgm::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/Arguments/' . $name . '.md');
+			$additionalDocumentationFile = ExtensionManagementUtility::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/Arguments/' . $name . '.md');
 			if (TRUE === file_exists($additionalDocumentationFile)) {
 				$additionalDocumentation = file_get_contents($additionalDocumentationFile);
 				$pattern = '/([a-z0-9^\s\/]+)\.md/i';
