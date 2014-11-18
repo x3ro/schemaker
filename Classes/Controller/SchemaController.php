@@ -230,9 +230,9 @@ class SchemaController extends ActionController {
 			return $this->cache->get($cacheKey);
 		}
 		$className = implode('/', $segments);
-		$url = t3lib_div::getIndpEnv('TYPO3_REQUEST_URL');
+		$url = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
 		$schemaFile = $this->getXsdStoragePathSetting() . $extensionKey . '-' . $version . '.xsd';
-		$schemaFile = t3lib_div::getFileAbsFileName($schemaFile);
+		$schemaFile = GeneralUtility::getFileAbsFileName($schemaFile);
 		$schemaSource = shell_exec('cat ' . $schemaFile . ' | tr -cd \'[:print:]\r\n\t\'');
 
 		$document = new \DOMDocument();
@@ -250,7 +250,7 @@ class SchemaController extends ActionController {
 		if (0 < count($segments)) {
 			$viewHelperArguments = $this->makeArgumentDefinitions($node, $extensionKey, $className);
 			$docComment = $node->getElementsByTagName('documentation')->item(0)->nodeValue;
-			$additionalDocumentationFile = t3lib_extMgm::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/README.md');
+			$additionalDocumentationFile = ExtensionManagementUtility::extPath($extensionKey, 'Documentation/Classes/ViewHelpers/' . $className . '/README.md');
 			$nextDiv = FALSE;
 			if (TRUE === file_exists($additionalDocumentationFile)) {
 				$alerts = array('warning', 'danger', 'success', 'info');
