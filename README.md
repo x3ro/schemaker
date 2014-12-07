@@ -3,7 +3,7 @@ Fluid ViewHelper XSD Schema Generator
 
 > Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
 
-[![Build Status](https://travis-ci.org/FluidTYPO3/schemaker.png?branch=master)](https://travis-ci.org/FluidTYPO3/schemaker)
+[![Build Status](https://img.shields.io/jenkins/s/https/jenkins.fluidtypo3.org/schemaker.svg?style=flat-square)](https://jenkins.fluidtypo3.org/job/schemaker/) [![Coverage Status](https://img.shields.io/coveralls/FluidTYPO3/schemaker/development.svg?style=flat-square)](https://coveralls.io/r/FluidTYPO3/schemaker)
 
 ## Why use it?
 
@@ -79,7 +79,7 @@ slashes also count!):
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
-	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<head>
 		<f:layout name="Default" />
 		<title>XSD Usage with extensions Fluid and VHS</title>
@@ -116,7 +116,7 @@ used. If your particular IDE does not require this approach, you should be able 
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
-	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<!-- Fluid goes here -->
 </div>
 ```
@@ -141,7 +141,7 @@ And construct the Partial template itself as such:
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
-	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<head>
 		<title>Partials: MyPartial</title>
 	</head>
@@ -207,7 +207,7 @@ You do not have to inject the Service in order to use it - but it does have to b
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
 	  xmlns:flux="http://fedext.net/ns/flux/ViewHelpers"
 	  xmlns:fed="http://fedext.net/ns/fed/ViewHelpers"
 	  xmlns:dialog="http://fedext.net/ns/dialog/ViewHelpers"
