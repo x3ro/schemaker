@@ -216,7 +216,7 @@ class SchemaController extends ActionController {
 	/**
 	 * @param string $extensionKey
 	 * @param string $version
-	 * @param array segments
+	 * @param array $segments
 	 * @return array
 	 */
 	protected function getSchemaData($extensionKey, $version, $segments) {
