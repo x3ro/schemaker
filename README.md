@@ -1,3 +1,5 @@
+<img src="https://fluidtypo3.org/logo.svgz" width="100%" />
+
 Fluid ViewHelper XSD Schema Generator
 =====================================
 
