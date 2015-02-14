@@ -155,6 +155,10 @@ class SchemaController extends ActionController {
 					$command = 'cd ' . $extensionPath . ' && ' . $gitCommand . ' log --reverse ' . $relativeFilename;
 					$history = shell_exec($command);
 					$history = preg_replace('/(([a-z0-9\.^\s]+)@([a-z0-9\.^\s]+))/u', '*****@$3', $history);
+					if (FALSE === empty($this->settings['xsdStoragePath'])) {
+						$url = '<a href="' . sprintf($this->settings['githubCommit'], $extensionKey) . '$1">$1</a>';
+						$history = preg_replace('/commit ([0-9a-f]{40})/g', $url, $history);
+					}
 					GeneralUtility::writeFile($historyCacheFile, $history);
 				}
 			} else {
