@@ -32,9 +32,6 @@ class SchemaServiceTest extends UnitTestCase {
 	 */
 	public function getTagNameForClassTestValues() {
 		return array(
-			array('Tx_Vhs_ViewHelpers_Content_RenderViewHelper', 'content.render'),
-			array('Tx_Vhs_ViewHelpers_Content_GetViewHelper', 'content.get'),
-			array('Tx_Vhs_ViewHelpers_ContentViewHelper', 'content'),
 			array('FluidTYPO3\\Vhs\\ViewHelpers\\Content\\RenderViewHelper', 'content.render'),
 			array('FluidTYPO3\\Vhs\\ViewHelpers\\Content\\GetViewHelper', 'content.get'),
 			array('TYPO3\\CMS\\Fluid\\ViewHelpers\\IfViewHelper', 'if'),
