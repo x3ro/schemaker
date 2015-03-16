@@ -8,6 +8,7 @@ namespace FluidTYPO3\Schemaker\Tests\Unit\Service;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use FluidTYPO3\Schemaker\Service\SchemaService;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
@@ -22,6 +23,7 @@ class SchemaServiceTest extends UnitTestCase {
 	 * @dataProvider getTagNameForClassTestValues
 	 */
 	public function testGetTagNameForClass($class, $expected) {
+		/** @var SchemaService $instance */
 		$instance = $this->getMock('FluidTYPO3\\Schemaker\\Service\\SchemaService', array(), array(), '', FALSE);
 		$result = $this->callInaccessibleMethod($instance, 'getTagNameForClass', $class);
 		$this->assertEquals($expected, $result);
