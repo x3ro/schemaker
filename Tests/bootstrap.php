@@ -11,6 +11,7 @@ $autoloader = require __DIR__ . '/../vendor/autoload.php';
 $autoloader->addPsr4('FluidTYPO3\\Schemaker\\Tests\\Unit\\', __DIR__ . '/Unit/');
 $autoloader->addPsr4('TYPO3\\CMS\\Core\\', __DIR__ . '/../vendor/typo3/cms/typo3/sysext/core/Classes/');
 $autoloader->addPsr4('TYPO3\\CMS\\Extbase\\', __DIR__ . '/../vendor/typo3/cms/typo3/sysext/extbase/Classes/');
+$autoloader->addPsr4('TYPO3\\CMS\\Fluid\\', __DIR__ . '/../vendor/typo3/cms/typo3/sysext/fluid/Classes/');
 
 \FluidTYPO3\Development\Bootstrap::initialize(array(
 	'cache_core' => \FluidTYPO3\Development\Bootstrap::CACHE_PHP_NULL,

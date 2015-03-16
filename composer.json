@@ -20,16 +20,9 @@
             }
         }
     ],
-    "autoload-dev": {
+    "autoload": {
         "psr-4": {
             "FluidTYPO3\\Schemaker\\": "Classes/"
-        },
-        "classmap": [
-            "vendor/typo3/cms/typo3/sysext/extbase",
-            "vendor/typo3/cms/typo3/sysext/fluid",
-            "vendor/typo3/cms/typo3/sysext/core",
-            "vendor/typo3/cms/typo3/sysext/backend",
-            "vendor/typo3/cms/typo3/sysext/frontend"
-        ]
+        }
     }
 }
