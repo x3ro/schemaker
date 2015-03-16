@@ -24,7 +24,7 @@ class SchemaServiceTest extends UnitTestCase {
 	 */
 	public function testGetTagNameForClass($class, $expected) {
 		/** @var SchemaService $instance */
-		$instance = $this->getMock('FluidTYPO3\\Schemaker\\Service\\SchemaService', array(), array(), '', FALSE);
+		$instance = new SchemaService();
 		$result = $this->callInaccessibleMethod($instance, 'getTagNameForClass', $class);
 		$this->assertEquals($expected, $result);
 	}
