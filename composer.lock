@@ -4,8 +4,51 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "de7df2d6049bd852a526541c9db75d0c",
-    "packages": [],
+    "hash": "d898c9fd41978ceed4c9dc83072742f5",
+    "packages": [
+        {
+            "name": "fluidtypo3/vhs",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FluidTYPO3/vhs.git",
+                "reference": "fee77a3cd82db22434a158a98bc40040e98cba1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FluidTYPO3/vhs/zipball/fee77a3cd82db22434a158a98bc40040e98cba1a",
+                "reference": "fee77a3cd82db22434a158a98bc40040e98cba1a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "fluidtypo3/development": "*"
+            },
+            "type": "typo3-cms-extension",
+            "autoload": {
+                "psr-4": {
+                    "FluidTYPO3\\Vhs\\": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "description": "The vhs package from FluidTYPO3",
+            "homepage": "https://fluidtypo3.org",
+            "keywords": [
+                "TYPO3 CMS",
+                "fedext",
+                "fluid",
+                "templating",
+                "utility",
+                "viewhelper"
+            ],
+            "time": "2015-03-15 01:18:50"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -82,16 +125,16 @@
         },
         {
             "name": "fluidtypo3/development",
-            "version": "1.2.0",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FluidTYPO3/fluidtypo3-development.git",
-                "reference": "cbc20c32d206572056b0a773ce2efd6d9848145b"
+                "reference": "af535f10560f69c890e2ff23176541ae8c9877c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FluidTYPO3/fluidtypo3-development/zipball/cbc20c32d206572056b0a773ce2efd6d9848145b",
-                "reference": "cbc20c32d206572056b0a773ce2efd6d9848145b",
+                "url": "https://api.github.com/repos/FluidTYPO3/fluidtypo3-development/zipball/af535f10560f69c890e2ff23176541ae8c9877c5",
+                "reference": "af535f10560f69c890e2ff23176541ae8c9877c5",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +144,7 @@
                 "phpunit/phpunit": "4.3.*",
                 "satooshi/php-coveralls": "*",
                 "squizlabs/php_codesniffer": "*",
-                "typo3/cms": "6.2.*"
+                "typo3/cms": "*"
             },
             "replace": {
                 "typo3/cms-composer-installers": "*"
@@ -136,7 +179,7 @@
                 "php",
                 "typo3"
             ],
-            "time": "2015-03-16 00:31:28"
+            "time": "2015-03-17 00:19:57"
         },
         {
             "name": "guzzle/guzzle",

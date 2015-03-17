@@ -157,7 +157,7 @@ class SchemaService implements SingletonInterface {
 	public function generateXsd($extensionKey, $xsdNamespace) {
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
-			throw new \Exception(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
+			throw new \RuntimeException(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
 		}
 		$xmlRootNode = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
 			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:php="http://www.php.net/" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
@@ -176,25 +176,24 @@ class SchemaService implements SingletonInterface {
 	 */
 	protected function generateXmlForClassName($className, \SimpleXMLElement $xmlRootNode) {
 		$reflectionClass = new ClassReflection($className);
-		if (!$reflectionClass->isSubclassOf($this->abstractViewHelperReflectionClass)) {
-			return;
+		if ($reflectionClass->isSubclassOf($this->abstractViewHelperReflectionClass)) {
+			$tagName = $this->getTagNameForClass($className);
+
+			$xsdElement = $xmlRootNode->addChild('xsd:element');
+			$xsdElement['name'] = $tagName;
+			$this->docCommentParser->parseDocComment($reflectionClass->getDocComment());
+			$this->addDocumentation($this->docCommentParser->getDescription(), $xsdElement);
+
+			$xsdComplexType = $xsdElement->addChild('xsd:complexType');
+			$xsdComplexType['mixed'] = 'true';
+			$xsdSequence = $xsdComplexType->addChild('xsd:sequence');
+			$xsdAny = $xsdSequence->addChild('xsd:any');
+			$xsdAny['minOccurs'] = '0';
+			$xsdAny['maxOccurs'] = '1';
+
+			$this->addAttributes($className, $xsdComplexType);
 		}
 
-		$tagName = $this->getTagNameForClass($className);
-
-		$xsdElement = $xmlRootNode->addChild('xsd:element');
-		$xsdElement['name'] = $tagName;
-		$this->docCommentParser->parseDocComment($reflectionClass->getDocComment());
-		$this->addDocumentation($this->docCommentParser->getDescription(), $xsdElement);
-
-		$xsdComplexType = $xsdElement->addChild('xsd:complexType');
-		$xsdComplexType['mixed'] = 'true';
-		$xsdSequence = $xsdComplexType->addChild('xsd:sequence');
-		$xsdAny = $xsdSequence->addChild('xsd:any');
-		$xsdAny['minOccurs'] = '0';
-		$xsdAny['maxOccurs'] = '1';
-
-		$this->addAttributes($className, $xsdComplexType);
 	}
 
 	/**
