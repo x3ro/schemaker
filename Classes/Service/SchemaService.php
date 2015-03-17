@@ -285,9 +285,6 @@ class SchemaService implements SingletonInterface {
 		if ($vendor) {
 			$classNamePart = str_replace('/', '\\', $stripped);
 			$className = $vendor . '\\' . ucfirst(GeneralUtility::underscoredToLowerCamelCase($extensionKey)) . '\\ViewHelpers\\' . $classNamePart;
-		} else {
-			$classNamePart = str_replace('/', '_', $stripped);
-			$className = 'Tx_' . ucfirst(GeneralUtility::underscoredToLowerCamelCase($extensionKey)) . '_ViewHelpers_' . $classNamePart;
 		}
 		return $className;
 	}
