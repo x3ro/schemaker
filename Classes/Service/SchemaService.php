@@ -72,7 +72,8 @@ class SchemaService implements SingletonInterface {
 	 *
 	 */
 	public function __construct() {
-		Fluid::$debugMode = TRUE; // We want ViewHelper argument documentation
+		// We want ViewHelper argument documentation
+		Fluid::$debugMode = TRUE;
 		$this->abstractViewHelperReflectionClass = new ClassReflection('TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\AbstractViewHelper');
 	}
 
@@ -152,7 +153,7 @@ class SchemaService implements SingletonInterface {
 	 * @param string $extensionKey Namespace identifier to generate the XSD for, without leading Backslash.
 	 * @param string $xsdNamespace $xsdNamespace unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers")
 	 * @return string XML Schema definition
-	 * @throws \Exception
+	 * @throws \RuntimeException
 	 */
 	public function generateXsd($extensionKey, $xsdNamespace) {
 		$classNames = $this->getClassNamesInExtension($extensionKey);

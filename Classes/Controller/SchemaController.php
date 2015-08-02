@@ -359,7 +359,8 @@ class SchemaController extends ActionController {
 		if (FALSE === is_array($tree)) {
 			return $tree;
 		}
-		$folders = $files = array();
+		$files = array();
+		$folders = array();
 		foreach ($tree as $key => $item) {
 			if (TRUE === is_array($item)) {
 				$folders[$key] = $this->sortTree($item);
@@ -479,11 +480,20 @@ class SchemaController extends ActionController {
 	 */
 	protected function buildArgumentTypeDummyRepresentation(ArgumentDefinition $argument, $quoteStrings = TRUE) {
 		switch ($argument->getType()) {
-			case 'string': $representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'"); break;
-			case 'array': $representation = "{foo: 'bar'}"; break;
-			case 'integer': $representation = 123; break;
-			case 'boolean': $representation = '1'; break;
-			default: $representation = '[' . $argument->getType() . ']';
+			case 'string':
+				$representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'");
+				break;
+			case 'array':
+				$representation = "{foo: 'bar'}";
+				break;
+			case 'integer':
+				$representation = 123;
+				break;
+			case 'boolean':
+				$representation = '1';
+				break;
+			default:
+				$representation = '[' . $argument->getType() . ']';
 		}
 		return $representation;
 	}
