@@ -66,6 +66,7 @@ class SchemaServiceTest extends UnitTestCase {
 	 * @test
 	 */
 	public function testGenerateXsdCreatesDocument() {
+		/** @var SchemaService $service */
 		$service = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')
 			->get('FluidTYPO3\\Schemaker\\Service\\SchemaService');
 		$schema = $service->generateXsd('FluidTYPO3.Vhs', 'test');
@@ -76,6 +77,7 @@ class SchemaServiceTest extends UnitTestCase {
 	 * @test
 	 */
 	public function testGenerateXsdErrorsWhenNoViewHelpersInExtension() {
+		/** @var SchemaService $service */
 		$service = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')
 			->get('FluidTYPO3\\Schemaker\\Service\\SchemaService');
 		$this->setExpectedException('RuntimeException');
@@ -93,6 +95,9 @@ class SchemaServiceTest extends UnitTestCase {
 		$this->assertEquals($expected, $result);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getConvertPhpTypeToXsdTypeTestValues() {
 		return array(
 			array('', 'xsd:anySimpleType'),
