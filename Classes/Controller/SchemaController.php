@@ -101,16 +101,6 @@ class SchemaController extends ActionController {
 		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$schemaFile = $this->getXsdStoragePathSetting() . $extensionKey . '-' . $version . '.xsd';
 		$schemaFile = GeneralUtility::getFileAbsFileName($schemaFile);
-		$schemaFileExists = file_exists($schemaFile);
-		$requestArguments = array(
-			'extensionKey' => $extensionKey,
-			'version' => 'master',
-			'p1' => $p1,
-			'p2' => $p2,
-			'p3' => $p3,
-			'p4' => $p4,
-			'p5' => $p5
-		);
 		$namespaceName = str_replace('_', '', $extensionKey);
 		$namespaceName = strtolower($namespaceName);
 		$namespaceAlias = str_replace('_', '', $extensionKey);
