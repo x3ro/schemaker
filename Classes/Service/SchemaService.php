@@ -152,18 +152,19 @@ class SchemaService implements SingletonInterface {
 	 *
 	 * @param string $extensionKey Namespace identifier to generate the XSD for, without leading Backslash.
 	 * @param string $xsdNamespace $xsdNamespace unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers")
+	 * @param boolean $enablePhpTypes if TRUE it will generate php:types and include its associated xmlns:php
 	 * @return string XML Schema definition
 	 * @throws \RuntimeException
 	 */
-	public function generateXsd($extensionKey, $xsdNamespace) {
+	public function generateXsd($extensionKey, $xsdNamespace, $enablePhpTypes) {
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
 			throw new \RuntimeException(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);
 		}
 		$xmlRootNode = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:php="http://www.php.net/" targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
+			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"' . (TRUE === $enablePhpTypes ? ' xmlns:php="http://www.php.net/"' : '') . ' targetNamespace="' . $xsdNamespace . '"></xsd:schema>');
 		foreach ($classNames as $className) {
-			$this->generateXmlForClassName($className, $xmlRootNode);
+			$this->generateXmlForClassName($className, $xmlRootNode, $enablePhpTypes);
 		}
 		return $xmlRootNode->asXML();
 	}
@@ -173,9 +174,10 @@ class SchemaService implements SingletonInterface {
 	 *
 	 * @param string $className Class name to generate the schema for.
 	 * @param \SimpleXMLElement $xmlRootNode XML root node where the xsd:element is appended.
+	 * @param boolean $enablePhpTypes if TRUE it will generate php:types
 	 * @return void
 	 */
-	protected function generateXmlForClassName($className, \SimpleXMLElement $xmlRootNode) {
+	protected function generateXmlForClassName($className, \SimpleXMLElement $xmlRootNode, $enablePhpTypes) {
 		$reflectionClass = new ClassReflection($className);
 		if ($reflectionClass->isSubclassOf($this->abstractViewHelperReflectionClass)) {
 			$tagName = $this->getTagNameForClass($className);
@@ -192,7 +194,7 @@ class SchemaService implements SingletonInterface {
 			$xsdAny['minOccurs'] = '0';
 			$xsdAny['maxOccurs'] = '1';
 
-			$this->addAttributes($className, $xsdComplexType);
+			$this->addAttributes($className, $xsdComplexType, $enablePhpTypes);
 		}
 
 	}
@@ -203,9 +205,10 @@ class SchemaService implements SingletonInterface {
 	 *
 	 * @param string $className Class name where to add the attribute descriptions
 	 * @param \SimpleXMLElement $xsdElement XML element to add the attributes to.
+	 * @param boolean $enablePhpTypes if it si TRUE it will generate php:types
 	 * @return void
 	 */
-	protected function addAttributes($className, \SimpleXMLElement $xsdElement) {
+	protected function addAttributes($className, \SimpleXMLElement $xsdElement, $enablePhpTypes) {
 		$viewHelper = $this->objectManager->get($className);
 		/** @var ArgumentDefinition[] $argumentDefinitions */
 		$argumentDefinitions = $viewHelper->prepareArguments();
@@ -217,7 +220,9 @@ class SchemaService implements SingletonInterface {
 			$xsdAttribute['type'] = $this->convertPhpTypeToXsdType($type);
 			$xsdAttribute['name'] = $argumentDefinition->getName();
 			$xsdAttribute['default'] = var_export($default, TRUE);
-			$xsdAttribute['php:type'] = $type;
+			if (TRUE === $enablePhpTypes) {
+				$xsdAttribute['php:type'] = $type;
+			}
 			if ($argumentDefinition->isRequired()) {
 				$xsdAttribute['use'] = 'required';
 			}
