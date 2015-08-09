@@ -94,6 +94,9 @@ class SchemaController extends ActionController {
 	public function schemaAction($extensionKey = NULL, $version = NULL, $p1 = NULL, $p2 = NULL, $p3 = NULL, $p4 = NULL, $p5 = NULL) {
 		if (NULL === $extensionKey) {
 			$extensionKey = $this->getExtensionKeySetting();
+			if (NULL === $extensionKey) {
+				$extensionKey = 'TYPO3.Fluid';
+			}
 			if (NULL === $version) {
 				$version = 'master';
 			}
