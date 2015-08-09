@@ -69,7 +69,7 @@ class SchemaServiceTest extends UnitTestCase {
 		/** @var SchemaService $service */
 		$service = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')
 			->get('FluidTYPO3\\Schemaker\\Service\\SchemaService');
-		$schema = $service->generateXsd('FluidTYPO3.Vhs', 'test');
+		$schema = $service->generateXsd('FluidTYPO3.Vhs', 'test', TRUE);
 		$this->assertNotEmpty($schema);
 	}
 
@@ -81,7 +81,7 @@ class SchemaServiceTest extends UnitTestCase {
 		$service = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager')
 			->get('FluidTYPO3\\Schemaker\\Service\\SchemaService');
 		$this->setExpectedException('RuntimeException');
-		$service->generateXsd('FluidTYPO3.Schemaker', 'test');
+		$service->generateXsd('FluidTYPO3.Schemaker', 'test', TRUE);
 	}
 
 	/**
