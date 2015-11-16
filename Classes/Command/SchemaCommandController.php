@@ -46,12 +46,13 @@ class SchemaCommandController extends CommandController {
 	 * @param string $extensionKey Extension key of generated extension. If namespaces are desired, the extension key should be in the format VendorName.ExtensionName (e.g. UpperCamelCase, dot-containing, no underscores)
 	 * @param string $xsdNamespace Unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers"). Defaults to "http://typo3.org/ns/<php namespace>".
 	 * @param boolean $enablePhpTypes if TRUE it will generate php:types and include its associated xmlns:php
+	 * @param boolean $enableDocumentation If FALSE no textual documentation will be added to the xsd
 	 * @return void
 	 */
-	public function generateCommand($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE) {
+	public function generateCommand($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE, $enableDocumentation = TRUE) {
 		try {
 			$enablePhpTypes = (boolean) $enablePhpTypes;
-			$schema = $this->generate($extensionKey, $xsdNamespace, $enablePhpTypes);
+			$schema = $this->generate($extensionKey, $xsdNamespace, $enablePhpTypes, $enableDocumentation);
 			$this->output($schema);
 		} catch (\Exception $exception) {
 			$this->outputLine('An error occured while trying to generate the XSD schema for "' . $extensionKey . '":');
@@ -168,12 +169,12 @@ class SchemaCommandController extends CommandController {
 	 * @param boolean $enablePhpTypes
 	 * @return string
 	 */
-	protected function generate($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE) {
+	protected function generate($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE, $enableDocumentation = TRUE) {
 		if ($xsdNamespace === NULL) {
 			$xsdExtensionKeySegment = FALSE !== strpos($extensionKey, '.') ? str_replace('.', '/', $extensionKey) : $extensionKey;
 			$xsdNamespace = sprintf('http://typo3.org/ns/%s/ViewHelpers', $xsdExtensionKeySegment);
 		}
-		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace, $enablePhpTypes);
+		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace, $enablePhpTypes, $enableDocumentation);
 		if (function_exists('tidy_repair_string') === TRUE) {
 			$xsdSchema = tidy_repair_string($xsdSchema, array(
 				'output-xml' => TRUE,
