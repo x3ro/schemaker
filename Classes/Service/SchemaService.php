@@ -230,6 +230,7 @@ class SchemaService implements SingletonInterface {
 			if ($argumentDefinition->isRequired()) {
 				$xsdAttribute['use'] = 'required';
 			} else {
+				$xsdAttribute['use'] = 'optional';
 				$xsdAttribute['default'] = var_export($default, TRUE);
 			}
 			if ($enableDocumentation) {
