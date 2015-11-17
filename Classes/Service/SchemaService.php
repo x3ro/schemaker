@@ -224,12 +224,13 @@ class SchemaService implements SingletonInterface {
 			$xsdAttribute = $xsdElement->addChild('xsd:attribute');
 			$xsdAttribute['type'] = $this->convertPhpTypeToXsdType($type);
 			$xsdAttribute['name'] = $argumentDefinition->getName();
-			$xsdAttribute['default'] = var_export($default, TRUE);
 			if (TRUE === $enablePhpTypes) {
 				$xsdAttribute['php:type'] = $type;
 			}
 			if ($argumentDefinition->isRequired()) {
 				$xsdAttribute['use'] = 'required';
+			} else {
+				$xsdAttribute['default'] = var_export($default, TRUE);
 			}
 			if ($enableDocumentation) {
 				$this->addDocumentation($argumentDefinition->getDescription(), $xsdAttribute);
