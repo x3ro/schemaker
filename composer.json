@@ -1,35 +1,17 @@
 {
-	"name": "fluidtypo3/schemaker",
-	"description": "The schemaker package from FluidTYPO3",
-	"type": "typo3-cms-extension",
-	"version": "3.0.4",
-	"require-dev": {
-		"typo3/cms": "6.2.7",
-		"fluidtypo3/development": "*"
-	},
-	"repositories": [
-		{
-			"type": "package",
-			"package": {
-				"name": "typo3/cms",
-				"version": "6.2.7",
-				"dist": {
-					"url": "https://github.com/TYPO3/TYPO3.CMS/archive/6.2.7.zip",
-					"type": "zip"
-				}
-			}
-		}
-	],
-	"autoload": {
-		"psr-4": {
-			"FluidTYPO3\\Schemaker\\": "Classes/"
-		},
-		"classmap": [
-			"vendor/typo3/cms/typo3/sysext/extbase",
-			"vendor/typo3/cms/typo3/sysext/fluid",
-			"vendor/typo3/cms/typo3/sysext/core",
-			"vendor/typo3/cms/typo3/sysext/backend",
-			"vendor/typo3/cms/typo3/sysext/frontend"
-		]
-	}
+    "name": "fluidtypo3/schemaker",
+    "description": "The schemaker package from FluidTYPO3",
+    "type": "typo3-cms-extension",
+    "version": "3.0.5",
+    "require": {
+        "fluidtypo3/vhs": "*"
+    },
+    "require-dev": {
+        "fluidtypo3/development": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FluidTYPO3\\Schemaker\\": "Classes/"
+        }
+    }
 }
