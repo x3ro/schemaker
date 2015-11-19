@@ -1,28 +1,12 @@
 <?php
 namespace FluidTYPO3\Schemaker\Command;
-/***************************************************************
- *  Copyright notice
+
+/*
+ * This file is part of the FluidTYPO3/Schemaker project under GPLv2 or later.
  *
- *  (c) 2014 Claus Due <claus@namelesscoder.net>
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * For the full copyright and license information, please read the
+ * LICENSE.md file that was distributed with this source code.
+ */
 
 use FluidTYPO3\Schemaker\Service\SchemaService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -61,11 +45,14 @@ class SchemaCommandController extends CommandController {
 	 *
 	 * @param string $extensionKey Extension key of generated extension. If namespaces are desired, the extension key should be in the format VendorName.ExtensionName (e.g. UpperCamelCase, dot-containing, no underscores)
 	 * @param string $xsdNamespace Unique target namespace used in the XSD schema (for example "http://yourdomain.org/ns/viewhelpers"). Defaults to "http://typo3.org/ns/<php namespace>".
+	 * @param boolean $enablePhpTypes if TRUE it will generate php:types and include its associated xmlns:php
+	 * @param boolean $enableDocumentation If FALSE no textual documentation will be added to the xsd
 	 * @return void
 	 */
-	public function generateCommand($extensionKey, $xsdNamespace = NULL) {
+	public function generateCommand($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE, $enableDocumentation = TRUE) {
 		try {
-			$schema = $this->generate($extensionKey, $xsdNamespace);
+			$enablePhpTypes = (boolean) $enablePhpTypes;
+			$schema = $this->generate($extensionKey, $xsdNamespace, $enablePhpTypes, $enableDocumentation);
 			$this->output($schema);
 		} catch (\Exception $exception) {
 			$this->outputLine('An error occured while trying to generate the XSD schema for "' . $extensionKey . '":');
@@ -179,14 +166,15 @@ class SchemaCommandController extends CommandController {
 	/**
 	 * @param string $extensionKey
 	 * @param string $xsdNamespace
+	 * @param boolean $enablePhpTypes
 	 * @return string
 	 */
-	protected function generate($extensionKey, $xsdNamespace = NULL) {
+	protected function generate($extensionKey, $xsdNamespace = NULL, $enablePhpTypes = FALSE, $enableDocumentation = TRUE) {
 		if ($xsdNamespace === NULL) {
 			$xsdExtensionKeySegment = FALSE !== strpos($extensionKey, '.') ? str_replace('.', '/', $extensionKey) : $extensionKey;
 			$xsdNamespace = sprintf('http://typo3.org/ns/%s/ViewHelpers', $xsdExtensionKeySegment);
 		}
-		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace);
+		$xsdSchema = $this->schemaService->generateXsd($extensionKey, $xsdNamespace, $enablePhpTypes, $enableDocumentation);
 		if (function_exists('tidy_repair_string') === TRUE) {
 			$xsdSchema = tidy_repair_string($xsdSchema, array(
 				'output-xml' => TRUE,

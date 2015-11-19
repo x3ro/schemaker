@@ -1,9 +1,17 @@
+<img src="https://fluidtypo3.org/logo.svgz" width="100%" />
+
 Fluid ViewHelper XSD Schema Generator
 =====================================
 
-> Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
+Package stauts:
 
 [![Build Status](https://img.shields.io/jenkins/s/https/jenkins.fluidtypo3.org/schemaker.svg?style=flat-square)](https://jenkins.fluidtypo3.org/job/schemaker/) [![Coverage Status](https://img.shields.io/coveralls/FluidTYPO3/schemaker/development.svg?style=flat-square)](https://coveralls.io/r/FluidTYPO3/schemaker)
+
+Framework status:
+
+[![Build Status](https://img.shields.io/jenkins/s/https/jenkins.fluidtypo3.org/fluidtypo3-testing.svg?style=flat-square)](https://jenkins.fluidtypo3.org/job/fluidtypo3-testing/) [![Coverage Status](https://img.shields.io/coveralls/FluidTYPO3/fluidtypo3-testing/master.svg?style=flat-square)](https://coveralls.io/r/FluidTYPO3/fluidtypo3-testing)
+
+> Schemaker is primarily a backport with some adaptations for TYPO3v4, from TYPO3.Fluid (i.e. not the TYPO3v4 version of Fluid).
 
 ## Why use it?
 
@@ -78,7 +86,7 @@ slashes also count!):
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
 	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<head>
 		<f:layout name="Default" />
@@ -115,7 +123,7 @@ used. If your particular IDE does not require this approach, you should be able 
 ```html
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
 	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<!-- Fluid goes here -->
 </div>
@@ -140,7 +148,7 @@ And construct the Partial template itself as such:
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
+	  xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
 	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 	<head>
 		<title>Partials: MyPartial</title>
@@ -208,23 +216,18 @@ You do not have to inject the Service in order to use it - but it does have to b
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
 	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:flux="http://fedext.net/ns/flux/ViewHelpers"
-	  xmlns:fed="http://fedext.net/ns/fed/ViewHelpers"
-	  xmlns:dialog="http://fedext.net/ns/dialog/ViewHelpers"
-	  xmlns:notify="http://fedext.net/ns/notify/ViewHelpers"
-	  xmlns:v="http://fedext.net/ns/vhs/ViewHelpers"
-	  xmlns:w="http://fedext.net/ns/fluidwidget/ViewHelpers"
+	  xmlns:flux="http://typo3.org/ns/FluidTYPO3/Flux/ViewHelpers"
+	  xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
+	  xmlns:w="http://typo3.org/ns/fluidwidget"
 	/>
 ```
 
-Note: The following schemas are available for download (use "save page as") at the URLs used in the namespaces:
+Note: The following schemas are available for download (use "save page as"):
 
-* http://fedext.net/ns/flux/ViewHelpers
-* http://fedext.net/ns/fed/ViewHelpers
-* http://fedext.net/ns/vhs/ViewHelpers
-* http://fedext.net/ns/fluidwidget/ViewHelpers
-* http://fedext.net/ns/dialog/ViewHelpers
-* http://fedext.net/ns/notify/ViewHelpers
+* [http://typo3.org/ns/TYPO3/Fluid/ViewHelpers](https://fluidtypo3.org/schemas/fluid-master.xsd)
+* [http://typo3.org/ns/FluidTYPO3/Flux/ViewHelpers](https://fluidtypo3.org/schemas/flux-master.xsd)
+* [http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers](https://fluidtypo3.org/schemas/vhs-master.xsd)
+* [http://typo3.org/ns/fluidwidget](https://fluidtypo3.org/schemas/fluidwidget-master.xsd)
 
 These schemas all apply to the very latest master versions of each extension's ViewHelpers - if you require an XSD for an earlier
 version which you currently have installed, simply generate an XSD from that TYPO3 installation and use the same namespace URL.

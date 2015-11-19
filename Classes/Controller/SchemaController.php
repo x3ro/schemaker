@@ -1,28 +1,12 @@
 <?php
 namespace FluidTYPO3\Schemaker\Controller;
-/***************************************************************
- *  Copyright notice
+
+/*
+ * This file is part of the FluidTYPO3/Schemaker project under GPLv2 or later.
  *
- *  (c) 2014 Claus Due <claus@namelesscoder.net>
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * For the full copyright and license information, please read the
+ * LICENSE.md file that was distributed with this source code.
+ */
 
 use FluidTYPO3\Schemaker\Service\SchemaService;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -110,6 +94,9 @@ class SchemaController extends ActionController {
 	public function schemaAction($extensionKey = NULL, $version = NULL, $p1 = NULL, $p2 = NULL, $p3 = NULL, $p4 = NULL, $p5 = NULL) {
 		if (NULL === $extensionKey) {
 			$extensionKey = $this->getExtensionKeySetting();
+			if (NULL === $extensionKey) {
+				$extensionKey = 'TYPO3.Fluid';
+			}
 			if (NULL === $version) {
 				$version = 'master';
 			}
@@ -117,16 +104,6 @@ class SchemaController extends ActionController {
 		list ($vendor, $extensionKey) = $this->schemaService->getRealExtensionKeyAndVendorFromCombinedExtensionKey($extensionKey);
 		$schemaFile = $this->getXsdStoragePathSetting() . $extensionKey . '-' . $version . '.xsd';
 		$schemaFile = GeneralUtility::getFileAbsFileName($schemaFile);
-		$schemaFileExists = file_exists($schemaFile);
-		$requestArguments = array(
-			'extensionKey' => $extensionKey,
-			'version' => 'master',
-			'p1' => $p1,
-			'p2' => $p2,
-			'p3' => $p3,
-			'p4' => $p4,
-			'p5' => $p5
-		);
 		$namespaceName = str_replace('_', '', $extensionKey);
 		$namespaceName = strtolower($namespaceName);
 		$namespaceAlias = str_replace('_', '', $extensionKey);
@@ -171,6 +148,10 @@ class SchemaController extends ActionController {
 					$command = 'cd ' . $extensionPath . ' && ' . $gitCommand . ' log --reverse ' . $relativeFilename;
 					$history = shell_exec($command);
 					$history = preg_replace('/(([a-z0-9\.^\s]+)@([a-z0-9\.^\s]+))/u', '*****@$3', $history);
+					if (FALSE === empty($this->settings['xsdStoragePath'])) {
+						$url = '<a href="' . sprintf($this->settings['githubCommit'], $extensionKey) . '$1">$1</a>';
+						$history = preg_replace('/commit ([0-9a-f]{40})/g', $url, $history);
+					}
 					GeneralUtility::writeFile($historyCacheFile, $history);
 				}
 			} else {
@@ -216,7 +197,7 @@ class SchemaController extends ActionController {
 	/**
 	 * @param string $extensionKey
 	 * @param string $version
-	 * @param array segments
+	 * @param array $segments
 	 * @return array
 	 */
 	protected function getSchemaData($extensionKey, $version, $segments) {
@@ -371,7 +352,8 @@ class SchemaController extends ActionController {
 		if (FALSE === is_array($tree)) {
 			return $tree;
 		}
-		$folders = $files = array();
+		$files = array();
+		$folders = array();
 		foreach ($tree as $key => $item) {
 			if (TRUE === is_array($item)) {
 				$folders[$key] = $this->sortTree($item);
@@ -491,11 +473,20 @@ class SchemaController extends ActionController {
 	 */
 	protected function buildArgumentTypeDummyRepresentation(ArgumentDefinition $argument, $quoteStrings = TRUE) {
 		switch ($argument->getType()) {
-			case 'string': $representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'"); break;
-			case 'array': $representation = "{foo: 'bar'}"; break;
-			case 'integer': $representation = 123; break;
-			case 'boolean': $representation = '1'; break;
-			default: $representation = '[' . $argument->getType() . ']';
+			case 'string':
+				$representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'");
+				break;
+			case 'array':
+				$representation = "{foo: 'bar'}";
+				break;
+			case 'integer':
+				$representation = 123;
+				break;
+			case 'boolean':
+				$representation = '1';
+				break;
+			default:
+				$representation = '[' . $argument->getType() . ']';
 		}
 		return $representation;
 	}
