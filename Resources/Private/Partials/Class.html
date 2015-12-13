@@ -1,15 +1,17 @@
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
 
-<div class="pull-right">Jump to:&nbsp;
-	<a href="{v:page.absoluteUrl()}#description"><i class="fa fa-file-text"></i> Description</a>&nbsp;
-	<a href="{v:page.absoluteUrl()}#arguments"><i class="fa fa-list-ul "></i> Arguments</a>&nbsp;
-	<a href="{v:page.absoluteUrl()}#history"><i class="fa fa-history"></i> History</a>&nbsp;
-	<f:if condition="{markdownBlacklisted} == 0">
-		<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
-		<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
-	</f:if>
-</div>
-<div class="clearfix"></div>
+<f:if condition="{showJumpLinks}">
+	<div class="pull-right">Jump to:&nbsp;
+		<a href="{v:page.absoluteUrl()}#description"><i class="fa fa-file-text"></i> Description</a>&nbsp;
+		<a href="{v:page.absoluteUrl()}#arguments"><i class="fa fa-list-ul "></i> Arguments</a>&nbsp;
+		<a href="{v:page.absoluteUrl()}#history"><i class="fa fa-history"></i> History</a>&nbsp;
+		<f:if condition="{markdownBlacklisted} == 0">
+			<v:variable.set name="sourcePath" value="{arguments -> v:iterator.slice(start: 2)  -> v:iterator.implode(glue: '/')}" />
+			<a href="{settings.githubPath -> f:format.printf(arguments: {1: '{arguments.extensionKey}', 2: '{arguments.version}', 3: '{sourcePath}'})}"><i class="fa fa-github-square"></i> Source Code</a>
+		</f:if>
+	</div>
+	<div class="clearfix"></div>
+</f:if>
 <h2>
 	{arguments -> v:iterator.slice(start: 2) -> v:iterator.implode(glue: ' / ')}
 </h2>
@@ -25,60 +27,73 @@
 			-> v:format.regularExpression(pattern: '/<output>(.*)<\/output>/Us', replacement: '<h4>Output</h4><pre class="prettyprint lang-xml">$1</pre><br />')
 			-> v:format.regularExpression(pattern: '/\\n([a-zA-Z0-9\-\*]{1,})/Us', replacement: '<br />$1')
 			-> v:format.regularExpression(pattern: '/(lang\-xml\">)<br \/>/Us', replacement: '$1')
+			-> v:or(alternative: docComment)
 			-> f:format.raw()}
 		</f:then>
 		<f:else>
+			<f:if condition="{v:format.markdown(text: '### Test')}">
+				<f:else>
+					<f:be.infobox title="Markdown parsing not available" state="2">
+						Your TYPO3 installation does not have a <strong>markdown</strong> shell command -
+						ViewHelper descriptions may not be rendered correctly. To fix this, install any
+						Markdown shell command and make sure it is callable using the command <strong>markdown</strong>.
+					</f:be.infobox>
+				</f:else>
+			</f:if>
 			{docComment
+			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint lang-xml">')
 			-> v:format.markdown()
-			-> v:format.replace(substring: '<pre>', replacement: '<pre class="prettyprint lang-xml">')}
+			-> v:or(alternative: '{docComment -> f:format.htmlentities() -> f:format.nl2br()}')}
 		</f:else>
 	</f:if>
 </f:if>
-<ul class="list-unstyled examples">
-	<li>
-		<h4>Tag usage example</h4>
-		<pre class="prettyprint lang-xml">{tagExample}</pre>
-	</li>
-	<li>
-		<h4>Inline usage example</h4>
-		<pre class="prettyprint lang-xml">{inlineExample}</pre>
-	</li>
-</ul>
-<a name="arguments"></a>
-<h3>Arguments</h3>
-<table class="table table-hover table-bordered">
-	<thead>
-		<tr>
-			<th>Argument</th>
-			<th>Description</th>
-			<th class="argument-type">Type</th>
-		</tr>
-	</thead>
-	<tbody>
-	<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
-		<tr>
-			<td>
-				<a name="argument-{argument.name}"></a>
-				<f:if condition="{argument.required}"><i class="glyphicon glyphicon-asterisk"></i></f:if>
-				<f:if condition="{argument.isMethodParameter}"><i class="glyphicon glyphicon-arrow-right"></i></f:if>
-				{argument.name}
-			</td>
-			<td>
-				{argument.description -> v:format.markdown()}
-			</td>
-			<td>{argument.type}</td>
-		</tr>
-	</f:for>
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="3">
-				<i class="glyphicon glyphicon-asterisk"></i> Required attribute
-			</td>
-		</tr>
-	</tfoot>
-</table>
-
-<a name="history"></a>
-<h3>Revision history</h3>
-<pre>{history -> f:format.htmlentities()}</pre>
+<f:if condition="{viewHelperArguments}">
+	<f:else>
+		<f:be.infobox title="No arguments" state="1">
+			ViewHelper defines no arguments. Depending on implementation, the ViewHelper may allow use of undeclared arguments.
+			In nearly all cases it means the ViewHelper wants/needs tag content, e.g. <code>&lt;ns:vh&gt;some content&lt;/ns:vh&gt;</code>,
+			but this cannot be determined automatically. Please read the description above to know if the ViewHelper supports or
+			even requires tag content.
+		</f:be.infobox>
+	</f:else>
+	<f:then>
+		<a name="arguments"></a>
+		<h3>Arguments</h3>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th>Flags</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th class="argument-type">Type</th>
+				</tr>
+			</thead>
+			<tbody>
+			<f:for each="{viewHelperArguments -> v:iterator.sort(sortBy: 'name')}" as="argument">
+				<tr>
+					<td class="col-sm-1">
+						<a name="argument-{argument.name}"></a>
+						<f:if condition="{argument.required}"><i class="fa fa-asterisk"></i></f:if>
+						<f:if condition="{argument.methodParameter}"><i class="fa fa-arrow-right"></i></f:if>
+					</td>
+					<td>
+						<code>{argument.name}</code>
+					</td>
+					<td>
+						{argument.description -> v:format.markdown() -> v:or(alternative: argument.description)}
+					</td>
+					<td>{argument.type}</td>
+				</tr>
+			</f:for>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="4" class="text-muted">
+						<i class="fa fa-asterisk"></i> Required attribute. The ViewHelper may or may not support empty or <code>null</code> values for the argument<br />
+						<i class="fa fa-arrow-right"></i> Is argument for method <code>{className}::render()</code>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</f:then>
+</f:if>
