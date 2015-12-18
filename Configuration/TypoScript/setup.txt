@@ -7,8 +7,8 @@ plugin.tx_schemaker {
     githubCommit = https://github.com/FluidTYPO3/%1$s/commit/
   }
   view {
-    templateRootPath = EXT:schemaker/Resources/Private/Templates/
-    partialRootPath = EXT:schemaker/Resources/Private/Partials/
-    layoutRootPath = EXT:schemaker/Resources/Private/Layouts/
+    templateRootPaths.0 = EXT:schemaker/Resources/Private/Templates/
+    partialRootPaths.0 = EXT:schemaker/Resources/Private/Partials/
+    layoutRootPaths.0 = EXT:schemaker/Resources/Private/Layouts/
   }
 }
