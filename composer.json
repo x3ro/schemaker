@@ -2,7 +2,7 @@
     "name": "fluidtypo3/schemaker",
     "description": "The schemaker package from FluidTYPO3",
     "type": "typo3-cms-extension",
-    "version": "3.1.0",
+    "version": "3.2.0",
     "require": {
         "fluidtypo3/vhs": "*"
     },
