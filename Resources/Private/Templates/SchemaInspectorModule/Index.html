@@ -1,0 +1,48 @@
+{namespace v=FluidTYPO3\Vhs\ViewHelpers}
+
+<f:layout name="Backend" />
+
+<f:section name="ButtonsLeft">
+
+</f:section>
+
+<f:section name="FunctionsLeft">
+	{csh -> f:format.raw()}
+</f:section>
+
+<f:section name="Content">
+	<f:render section="{view}" arguments="{_all}" />
+	<script type="text/javascript" src="{f:uri.resource(path: 'Javascript/Application.js')}"></script>
+	<link rel="stylesheet" href="{f:uri.resource(path: 'Stylesheet/Application.css')}" />
+</f:section>
+
+<f:section name="Index">
+	<input type="hidden" id="viewing-classname" value="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}" />
+
+	<div class="row">
+		<div class="col-sm-3 form-group">
+			<div class="form-selectors">
+				<fieldset>
+					<f:render section="Extensions" arguments="{_all}" />
+				</fieldset>
+			</div>
+			<f:render partial="Index" arguments="{tree: tree, extensionKey: extensionKey, version: version, arguments: {extensionKey: extensionKey, version: version}}" />
+		</div>
+		<div class="col-sm-9">
+			<f:if condition="{isFile}">
+				<f:render partial="Class" arguments="{_all}" />
+			</f:if>
+		</div>
+	</div>
+
+</f:section>
+
+<f:section name="Extensions">
+	<f:form action="index">
+	<f:if condition="0 < {extensionKeys -> f:count()}">
+		<f:for each="{extensionKeys}" as="selectableExtensionKey">
+			<f:link.action class="btn btn-{f:if(condition: '{extensionKey} == {selectableExtensionKey}', then: 'primary', else: 'default')} btn-block" arguments="{extensionKey: selectableExtensionKey}">{selectableExtensionKey}</f:link.action>
+		</f:for>
+	</f:if>
+	</f:form>
+</f:section>

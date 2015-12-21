@@ -18,11 +18,11 @@ $EM_CONF[$_EXTKEY] = array(
 	'author_email' => 'claus@namelesscoder.net',
 	'author_company' => '',
 	'shy' => '',
-	'dependencies' => 'cms,extbase,fluid',
+	'dependencies' => 'extbase,fluid',
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
-	'state' => 'stable',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => 0,
 	'createDirs' => '',
@@ -33,14 +33,13 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.2.0-7.6.99',
-			'cms' => '',
 			'extbase' => '',
 			'fluid' => '',
+			'vhs' => '',
 		),
 		'conflicts' => array(
 		),
 		'suggests' => array(
-			'vhs' => '',
 		),
 	),
 	'suggests' => array(

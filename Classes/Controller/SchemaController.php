@@ -138,23 +138,8 @@ class SchemaController extends ActionController {
 
 		$className = implode('/', $segments);
 		if (TRUE === ExtensionManagementUtility::isLoaded($extensionKey)) {
-			$extensionPath = ExtensionManagementUtility::extPath($extensionKey);
-			if (FALSE === empty($className)) {
-				$relativeFilename = 'Classes/ViewHelpers/' . $className . '.php';
-				$historyCacheFile = GeneralUtility::getFileAbsFileName('typo3temp/schemaker-git-log-' . str_replace('/', '-', $relativeFilename) . '.log');
-				if (TRUE === file_exists($historyCacheFile) && (time() - 21600) < filemtime($historyCacheFile)) {
-					$history = file_get_contents($historyCacheFile);
-				} else {
-					$command = 'cd ' . $extensionPath . ' && ' . $gitCommand . ' log --reverse ' . $relativeFilename;
-					$history = shell_exec($command);
-					$history = preg_replace('/(([a-z0-9\.^\s]+)@([a-z0-9\.^\s]+))/u', '*****@$3', $history);
-					if (FALSE === empty($this->settings['xsdStoragePath'])) {
-						$url = '<a href="' . sprintf($this->settings['githubCommit'], $extensionKey) . '$1">$1</a>';
-						$history = preg_replace('/commit ([0-9a-f]{40})/g', $url, $history);
-					}
-					GeneralUtility::writeFile($historyCacheFile, $history);
-				}
-			} else {
+			if (empty($className)) {
+				$extensionPath = ExtensionManagementUtility::extPath($extensionKey);
 				$readmeFile = $extensionPath . 'Classes/ViewHelpers/README.md';
 				if (TRUE === file_exists($readmeFile)) {
 					$readmeFile = file_get_contents($readmeFile);
@@ -165,8 +150,8 @@ class SchemaController extends ActionController {
 		}
 
 		$variables = array(
+			'action' => 'schema',
 			'readmeFile' => $readmeFile,
-			'history' => $history,
 			'name' => end($segments),
 			'schemaFile' => $relativeSchemaFile,
 			'keys' => array(),
@@ -175,8 +160,6 @@ class SchemaController extends ActionController {
 			'namespaceName' => $namespaceName,
 			'namespaceAlias' => $namespaceAlias,
 			'className' => $className,
-			'tagExample' => $this->buildTagExample($namespaceAlias, implode('.', array_map('lcfirst', $segments)), $viewHelperArguments, FALSE),
-			'inlineExample' => $this->buildInlineExample($namespaceAlias, implode('.', array_map('lcfirst', $segments)), $viewHelperArguments),
 			'ns' => $namespaceName,
 			'isFile' => (NULL !== $node),
 			'arguments' => $arguments,
@@ -189,7 +172,8 @@ class SchemaController extends ActionController {
 			'versions' => $versions,
 			'extensionKey' => $extensionKey,
 			'extensionKeys' => $extensionKeys,
-			'extensionName' => $extensionName
+			'extensionName' => $extensionName,
+			'showJumpLinks' => TRUE
 		);
 		$this->view->assignMultiple($variables);
 	}
@@ -366,57 +350,6 @@ class SchemaController extends ActionController {
 	}
 
 	/**
-	 * @param string $namespace
-	 * @param string $name
-	 * @param ArgumentDefinition[] $arguments
-	 * @param boolean $onlyRequired
-	 * @param boolean $selfClosing
-	 * @return string
-	 */
-	protected function buildTagExample($namespace, $name, $arguments, $onlyRequired, $selfClosing = FALSE) {
-		$example = '<' . $namespace . ':' . substr($name, 0, -10) . '';
-		foreach ($arguments as $argument) {
-			if ($onlyRequired && !$argument->isRequired()) {
-				continue;
-			}
-			$example .= ' ' . $argument->getName() . '="' . $this->buildArgumentTypeDummyRepresentation($argument, FALSE) . '"';
-		}
-		if ($selfClosing) {
-			$example .= ' />';
-		} else {
-			$example .= '>' . LF;
-			$example .= '	<!-- tag content - may be ignored! -->' . LF;
-			$example .= '</' . $namespace . ':' . substr($name, 0, -10) . '>';
-		}
-		return $example;
-	}
-
-	/**
-	 * @param string $namespace
-	 * @param string $name
-	 * @param ArgumentDefinition[] $arguments
-	 * @param boolean $onlyRequired
-	 * @return string
-	 */
-	protected function buildInlineExample($namespace, $name, $arguments, $onlyRequired = FALSE) {
-		$example = '{' . $namespace . ':' . substr($name, 0, -10) . '(';
-		$argumentsRendered = FALSE;
-		foreach ($arguments as $argument) {
-			if ($onlyRequired && !$argument->isRequired()) {
-				continue;
-			}
-			$example .= $argument->getName() . ': ' . $this->buildArgumentTypeDummyRepresentation($argument);
-			$example .= ', ';
-			$argumentsRendered = TRUE;
-		}
-		if ($argumentsRendered) {
-			$example = substr($example, 0, -2);
-		}
-		$example .= ')}';
-		return $example;
-	}
-
-	/**
 	 * @param \DOMDocument $document
 	 * @param array $segments
 	 * @return \DOMElement
@@ -464,31 +397,6 @@ class SchemaController extends ActionController {
 			$definitions[$name] = $definition;
 		}
 		return $definitions;
-	}
-
-	/**
-	 * @param ArgumentDefinition $argument
-	 * @param boolean $quoteStrings
-	 * @return string
-	 */
-	protected function buildArgumentTypeDummyRepresentation(ArgumentDefinition $argument, $quoteStrings = TRUE) {
-		switch ($argument->getType()) {
-			case 'string':
-				$representation = (!$quoteStrings ? '' : "'") . ($argument->getDefaultValue() ? $argument->getDefaultValue() : 'foo') . (!$quoteStrings ? '' : "'");
-				break;
-			case 'array':
-				$representation = "{foo: 'bar'}";
-				break;
-			case 'integer':
-				$representation = 123;
-				break;
-			case 'boolean':
-				$representation = '1';
-				break;
-			default:
-				$representation = '[' . $argument->getType() . ']';
-		}
-		return $representation;
 	}
 
 	/**

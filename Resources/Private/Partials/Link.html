@@ -1,9 +1,9 @@
 {namespace v=FluidTYPO3\Vhs\ViewHelpers}
-<f:link.action action="schema" arguments="{arguments}" id="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}"
+<f:link.action action="{action}" arguments="{arguments}" id="{arguments -> v:iterator.implode(glue: '-') -> v:format.url.sanitizeString()}"
                class="file" name="{dataClass -> v:format.url.sanitizeString()}">
 	<f:if condition="{icon}">
 		<f:then>
-			<i class="glyphicon glyphicon-{icon}"></i> {text}
+			<i class="glyphicon glyphicon-{icon} fa-icon fa-icon-{icon}"></i> {text}
 		</f:then>
 		<f:else>
 			{text}
