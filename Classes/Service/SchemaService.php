@@ -158,6 +158,10 @@ class SchemaService implements SingletonInterface {
 	 * @throws \RuntimeException
 	 */
 	public function generateXsd($extensionKey, $xsdNamespace, $enablePhpTypes, $enableDocumentation = TRUE) {
+		if(strpos($extensionKey, ".") === FALSE) {
+			throw new \RuntimeException(sprintf('Please supply the extension key including the vendor prefix. E.g., instead of "flux", use "FluidTYPO3.flux". Provided value was "%s".', $extensionKey));
+		}
+
 		$classNames = $this->getClassNamesInExtension($extensionKey);
 		if (count($classNames) === 0) {
 			throw new \RuntimeException(sprintf('No ViewHelpers found in namespace "%s"', $extensionKey), 1330029328);

@@ -69,7 +69,13 @@ DESCRIPTION:
 Execution:
 
 ```bash
-me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate my_extkey "http://my.domain/namespace" > me.xsd
+me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate vendor_prefix.my_extkey "http://my.domain/namespace" > me.xsd
+```
+
+or a more concrete example
+
+```bash
+me@localhost:~/documentroot $ ./typo3/cli_dispatch.phpsh extbase schema:generate FluidTYPO3.flux "http://my.domain/namespace" > me.xsd
 ```
 
 ...which will generate an XSD schema for all ViewHelpers in extension key (not ExtensionName!) "my_extkey", with the XSD namespace
